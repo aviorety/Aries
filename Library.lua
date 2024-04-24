@@ -57,10 +57,12 @@ function Library:visible()
 
 			self.Container.Visible = false
 			self.Shadow.Visible = false
+			self.Modal = false
 		end)
 	else
 		self.Container.Visible = true
 		self.Shadow.Visible = true
+		self.Modal = true
 
 		TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
 			Size = UDim2.new(0, 739, 0, 437)
