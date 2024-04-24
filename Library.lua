@@ -47,9 +47,14 @@ function Library:visible()
 
 		local main_tween = TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
 			Size = UDim2.new(0, 0, 0, 0)
-		}):Play()
+		})
 
+		main_tween:Play()
 		main_tween.Completed:Once(function()
+			if GUI_OPEN then
+				return
+			end
+
 			self.Enabled = false
 		end)
 	else
