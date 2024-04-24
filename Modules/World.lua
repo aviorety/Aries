@@ -1,4 +1,4 @@
-local Player = loadstring(game:HttpGet('https://raw.githubusercontent.com/Aries7200/Aries_/main/Modules/Player.lua'))()
+local Player = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Modules/Player.lua'))()
 
 local World = {}
 
