@@ -55,10 +55,12 @@ function Library:visible()
 				return
 			end
 
-			self.Enabled = false
+			self.Container = false
+			self.Shadow = false
 		end)
 	else
-		self.Enabled = true
+		self.Container = true
+		self.Shadow = true
 
 		TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
 			Size = UDim2.new(0, 739, 0, 437)
@@ -89,16 +91,21 @@ function Library:new()
 			return
 		end
 
+		if not screen_gui or not screen_gui.Parent then
+			return
+		end
+
 		if input.KeyCode == Enum.KeyCode.Insert then
 			Library.visible(screen_gui)
 		end
 	end)
 	
 	mobile_button.MouseButton1Click:Connect(function()
-		Library.visible({
-			container = container,
-			shadow = shadow
-		})
+		if not screen_gui or not screen_gui.Parent then
+			return
+		end
+
+		Library.visible(screen_gui)
 	end)
 	
 	local tabs = game:GetObjects('rbxassetid://17253920558')[1]
