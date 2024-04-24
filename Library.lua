@@ -41,19 +41,25 @@ function Library:visible()
 	GUI_OPEN = not GUI_OPEN
 	
 	if not GUI_OPEN then
-		TweenService:Create(self.container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+		TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
 			Size = UDim2.new(0, 0, 0, 0)
 		}):Play()
 
-		TweenService:Create(self.shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+		local main_tween = TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
 			Size = UDim2.new(0, 0, 0, 0)
 		}):Play()
+
+		main_tween.Completed:Once(function()
+			self.Enabled = false
+		end)
 	else
-		TweenService:Create(self.container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+		self.Enabled = true
+
+		TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
 			Size = UDim2.new(0, 739, 0, 437)
 		}):Play()
 
-		TweenService:Create(self.shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+		TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
 			Size = UDim2.new(0, 810, 0, 491)
 		}):Play()
 	end
@@ -79,10 +85,7 @@ function Library:new()
 		end
 
 		if input.KeyCode == Enum.KeyCode.Insert then
-			Library.visible({
-				container = container,
-				shadow = shadow
-			})
+			Library.visible(screen_gui)
 		end
 	end)
 	
