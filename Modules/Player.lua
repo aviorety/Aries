@@ -1,3 +1,5 @@
+local Stats = game:GetService('Stats')
+
 local Player = {}
 
 
@@ -25,6 +27,11 @@ function Player:alive()
     end
 
     return true
+end
+
+
+function Player:get_ping()
+    return Stats.Network.ServerStatsItem['Data Ping']:GetValue()
 end
 
 
