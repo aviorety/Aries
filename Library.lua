@@ -239,6 +239,7 @@ function Library:new()
 			toggle.TextLabel.Text = self.name
 
 			Library.flags[self.flag] = self.enabled
+			self.callback(self.enabled)
 			
 			Module.update_toggle({
 				state = self.enabled,
