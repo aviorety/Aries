@@ -150,15 +150,15 @@ function Library:new()
 			}):Play()
 
 			TweenService:Create(object.Glow, TweenInfo.new(0.4), {
-				ImageTransparency = 0
+				ImageTransparency = 1
 			}):Play()
 	
 			TweenService:Create(object.TextLabel, TweenInfo.new(0.4), {
-				TextTransparency = 0
+				TextTransparency = 0.5
 			}):Play()
 	
 			TweenService:Create(object.Logo, TweenInfo.new(0.4), {
-				ImageTransparency = 0
+				ImageTransparency = 0.5
 			}):Play()
 		end
 	end
