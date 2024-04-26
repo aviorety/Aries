@@ -1,243 +1,267 @@
-local UserInputService = game:GetService('UserInputService')
-local TweenService = game:GetService('TweenService')
 local CoreGui = game:GetService('CoreGui')
+local TweenService = game:GetService('TweenService')
+local UserInputService = game:GetService('UserInputService')
 
 for _, object in CoreGui:GetChildren() do
 	if object.Name ~= 'Aries' then
 		continue
 	end
-	
+
 	object:Destroy()
 end
 
-local GUI_OPEN = true
-
 local Library = {}
 Library.flags = {}
+Library.enabled = true
 
 
-function Library:update_toggle()
-	if self.state then
-		TweenService:Create(self.toggle.Checkbox, TweenInfo.new(0.2), {
-			BackgroundColor3 = Color3.fromRGB(65, 80, 133)
-		}):Play()
-		
-		TweenService:Create(self.toggle.Checkbox.UIStroke, TweenInfo.new(0.2), {
-			Color = Color3.fromRGB(83, 103, 171)
-		}):Play()
-	else
-		TweenService:Create(self.toggle.Checkbox, TweenInfo.new(0.2), {
-			BackgroundColor3 = Color3.fromRGB(31, 31, 37)
-		}):Play()
+function Library:open()
+	self.Container.Visible = true
+	self.Shadow.Visible = true
+	--self.Mobile.Modal = true
 
-		TweenService:Create(self.toggle.Checkbox.UIStroke, TweenInfo.new(0.2), {
-			Color = Color3.fromRGB(40, 41, 50)
-		}):Play()
-	end
+	TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+		Size = UDim2.new(0, 699, 0, 426)
+	}):Play()
+
+	TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+		Size = UDim2.new(0, 776, 0, 509)
+	}):Play()
+end
+
+
+function Library:close()
+	TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+		Size = UDim2.new(0, 0, 0, 0)
+	}):Play()
+
+	local main_tween = TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+		Size = UDim2.new(0, 0, 0, 0)
+	})
+
+	main_tween:Play()
+	main_tween.Completed:Once(function()
+		if Library.open then
+			return
+		end
+
+		self.Container.Visible = false
+		self.Shadow.Visible = false
+		--self.Mobile.Modal = false
+	end)
 end
 
 
 function Library:visible()
-	GUI_OPEN = not GUI_OPEN
-	
-	if not GUI_OPEN then
-		TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-			Size = UDim2.new(0, 0, 0, 0)
-		}):Play()
+	Library.enabled = not Library.enabled
 
-		local main_tween = TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-			Size = UDim2.new(0, 0, 0, 0)
-		})
-
-		main_tween:Play()
-		main_tween.Completed:Once(function()
-			if GUI_OPEN then
-				return
-			end
-
-			self.Container.Visible = false
-			self.Shadow.Visible = false
-			self.Mobile.Modal = false
-		end)
+	if Library.enabled then
+		Library.open(self)
 	else
-		self.Container.Visible = true
-		self.Shadow.Visible = true
-		self.Mobile.Modal = true
-
-		TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-			Size = UDim2.new(0, 739, 0, 437)
-		}):Play()
-
-		TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-			Size = UDim2.new(0, 810, 0, 491)
-		}):Play()
+		Library.close(self)
 	end
 end
 
 
 function Library:new()
-	local screen_gui = game:GetObjects('rbxassetid://17193047920')[1]
-	screen_gui.Parent = CoreGui
-	
-	local container = game:GetObjects('rbxassetid://17254016336')[1]
-	container.Parent = screen_gui
-	
-	local shadow = game:GetObjects('rbxassetid://17253947320')[1]
-	shadow.Parent = screen_gui
-	
+	local container = game:GetObjects('rbxassetid://17291182583')[1]
+	container.Parent = CoreGui
+
+	local tabs = game:GetObjects('rbxassetid://17290916582')[1]
+	tabs.Parent = container.Container
+
 	local mobile_button = game:GetObjects('rbxassetid://17253950757')[1]
-	mobile_button.Parent = screen_gui
-	
+	mobile_button.Parent = container
+
 	UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
 		if process then
 			return
 		end
 
-		if not screen_gui or not screen_gui.Parent then
+		if not container or not container.Parent then
 			return
 		end
 
 		if input.KeyCode == Enum.KeyCode.Insert then
-			Library.visible(screen_gui)
+			Library.visible(container)
 		end
 	end)
-	
+
 	mobile_button.MouseButton1Click:Connect(function()
-		if not screen_gui or not screen_gui.Parent then
-			return
-		end
-
-		Library.visible(screen_gui)
+		Library.visible(container)
 	end)
-	
-	local tabs = game:GetObjects('rbxassetid://17253920558')[1]
-	tabs.Parent = container
-	
-	local TabFunctions = {}
-	
-	function TabFunctions:update_sections()
-		for _, object in container:GetChildren() do
-			if object.Name:find('Sections') then
-				object.Visible = false
-			end
-		end
 
-		self.section_1.Visible = true
-		self.section_2.Visible = true
+	local Tab = {}
+
+	function Tab:update_sections()
+		self.left_section.Visible = true
+		self.right_section.Visible = true
+
+		for _, object in container.Container:GetChildren() do
+			if not object.Name:find('Section') then
+				continue
+			end
+
+			if object == self.left_section then
+				continue
+			end
+
+			if object == self.right_section then
+				continue
+			end
+
+			object.Visible = false
+		end
 	end
 
-	function TabFunctions:update_tabs()
-		TabFunctions.update_sections({
-			section_1 = self.section_1,
-			section_2 = self.section_2
+	function Tab:open_tab()
+		Tab.update_sections({
+			left_section = self.left_section,
+			right_section = self.right_section
 		})
 
-		TweenService:Create(self.tab, TweenInfo.new(0.2), {
-			BackgroundColor3 = Color3.fromRGB(65, 80, 133)
+		TweenService:Create(self.tab.Fill, TweenInfo.new(0.4), {
+			BackgroundTransparency = 0
 		}):Play()
-		
-		TweenService:Create(self.tab.UIStroke, TweenInfo.new(0.2), {
-			Color = Color3.fromRGB(83, 103, 171)
+
+		TweenService:Create(self.tab.Glow, TweenInfo.new(0.4), {
+			ImageTransparency = 0
+		}):Play()
+
+		TweenService:Create(self.tab.TextLabel, TweenInfo.new(0.4), {
+			TextTransparency = 0
+		}):Play()
+
+		TweenService:Create(self.tab.Logo, TweenInfo.new(0.4), {
+			ImageTransparency = 0
 		}):Play()
 
 		for _, object in tabs:GetChildren() do
+			if object.Name ~= 'Tab' then
+				continue
+			end
+
 			if object == self.tab then
 				continue
 			end
 
-			if object.Name == 'Tab' then
-				TweenService:Create(object, TweenInfo.new(0.2), {
-					BackgroundColor3 = Color3.fromRGB(30, 30, 34)
-				}):Play()
+			TweenService:Create(object.Fill, TweenInfo.new(0.4), {
+				BackgroundTransparency = 1
+			}):Play()
 
-				TweenService:Create(object.UIStroke, TweenInfo.new(0.2), {
-					Color = Color3.fromRGB(37, 37, 44)
-				}):Play()
-			end
+			TweenService:Create(object.Glow, TweenInfo.new(0.4), {
+				ImageTransparency = 0
+			}):Play()
+	
+			TweenService:Create(object.TextLabel, TweenInfo.new(0.4), {
+				TextTransparency = 0
+			}):Play()
+	
+			TweenService:Create(object.Logo, TweenInfo.new(0.4), {
+				ImageTransparency = 0
+			}):Play()
 		end
 	end
-	
-	function TabFunctions:create_tab()
-		local tab = game:GetObjects('rbxassetid://17253894877')[1]
+
+	function Tab:create_tab()
+		local tab = game:GetObjects('rbxassetid://17291017542')[1]
 		tab.Parent = tabs
-		tab.TabName.Text = self
+		tab.TextLabel.Text = self
 
-		local section_1 = game:GetObjects('rbxassetid://17253867101')[1]
-		local section_2 = game:GetObjects('rbxassetid://17253865212')[1]
+		local left_section = game:GetObjects('rbxassetid://17291069143')[1]
+		local right_section = game:GetObjects('rbxassetid://17291072834')[1]
 
-		if container:FindFirstChild('RightSections') then
-			section_1.Visible = false
-			section_2.Visible = false
+		if container.Container:FindFirstChild('RightSection') then
+			left_section.Visible = false
+			right_section.Visible = false
 		else
-			TabFunctions.update_tabs({
+			Tab.open_tab({
 				tab = tab,
-				section_1 = section_1,
-				section_2 = section_2
+				left_section = left_section,
+				right_section = right_section
 			})
 		end
 
-		section_1.Parent = container
-		section_2.Parent = container
+		left_section.Parent = container.Container
+		right_section.Parent = container.Container
 
 		tab.MouseButton1Click:Connect(function()
-			TabFunctions.update_tabs({
+			Tab.open_tab({
 				tab = tab,
-				section_1 = section_1,
-				section_2 = section_2
+				left_section = left_section,
+				right_section = right_section
 			})
 		end)
-		
-		local SectionFunctions = {}
-		
-		function SectionFunctions:create_section()
-			local section_side = self.side == 'right' and section_2 or section_1
-			local section_size = 20
-			
-			local section_name = game:GetObjects('rbxassetid://17253851933')[1]
-			section_name.Text = self.name
-			section_name.Parent = section_side
-			
-			local section = game:GetObjects('rbxassetid://17253909862')[1]
-			section.Parent = section_side
-			
-			local Functions = {}
 
-			function Functions:create_toggle()
-				section_size += 15
-				section.Size = UDim2.new(0, 234, 0, section_size)
-				
-				local toggle = game:GetObjects('rbxassetid://17253905947')[1]
-				toggle.ToggleName.Text = self.name
-				toggle.Parent = section
-				
-				Library.update_toggle({
-					toggle = toggle,
-					state = self.state
-				})
-				
-				self.callback(self.state)
-                Library.flags[self.flag] = self.state
-				
-				toggle.MouseButton1Click:Connect(function()
-					self.state = not self.state
-                    Library.flags[self.flag] = self.state
-					
-					Library.update_toggle({
-						toggle = toggle,
-						state = self.state
-					})
-					
-					self.callback(self.state)
-				end)
-			end
-			
-			return Functions
+		local Module = {}
+
+		function Module:create_title()
+			local section = self.section == 'left' and left_section or right_section
+
+			local title = game:GetObjects('rbxassetid://17291106124')[1]
+			title.Parent = section
+			title.Text = self.name
 		end
 
-		return SectionFunctions
+		function Module:enable_toggle()
+			TweenService:Create(self.Checkbox.Fill, TweenInfo.new(0.4), {
+				BackgroundTransparency = 0
+			}):Play()
+
+			TweenService:Create(self.Checkbox.Glow, TweenInfo.new(0.4), {
+				ImageTransparency = 0
+			}):Play()
+		end
+
+		function Module:disable_toggle()
+			TweenService:Create(self.Checkbox.Fill, TweenInfo.new(0.4), {
+				BackgroundTransparency = 1
+			}):Play()
+
+			TweenService:Create(self.Checkbox.Glow, TweenInfo.new(0.4), {
+				ImageTransparency = 1
+			}):Play()
+		end
+
+		function Module:update_toggle()
+			if self.state then
+				Module.enable_toggle(self.toggle)
+			else
+				Module.disable_toggle(self.toggle)
+			end
+		end
+
+		function Module:create_toggle()
+			local section = self.section == 'left' and left_section or right_section
+
+			local toggle = game:GetObjects('rbxassetid://17291122957')[1]
+			toggle.Parent = section
+			toggle.TextLabel.Text = self.name
+
+			Library.flags[self.flag] = self.enabled
+			
+			Module.update_toggle({
+				state = self.enabled,
+				toggle = toggle
+			})
+
+			toggle.MouseButton1Click:Connect(function()
+				self.enabled = not self.enabled
+				Library.flags[self.flag] = self.enabled
+
+				Module.update_toggle({
+					state = self.enabled,
+					toggle = toggle
+				})
+
+				self.callback(self.enabled)
+			end)
+		end
+
+		return Module
 	end
 
-	return TabFunctions
+	return Tab
 end
 
 
