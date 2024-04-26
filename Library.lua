@@ -18,7 +18,7 @@ Library.enabled = true
 function Library:open()
 	self.Container.Visible = true
 	self.Shadow.Visible = true
-	--self.Mobile.Modal = true
+	self.Mobile.Modal = true
 
 	TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
 		Size = UDim2.new(0, 699, 0, 426)
@@ -47,7 +47,7 @@ function Library:close()
 
 		self.Container.Visible = false
 		self.Shadow.Visible = false
-		--self.Mobile.Modal = false
+		self.Mobile.Modal = false
 	end)
 end
 
