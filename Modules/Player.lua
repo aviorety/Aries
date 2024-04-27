@@ -1,3 +1,4 @@
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Stats = game:GetService('Stats')
 
 local Player = {}
