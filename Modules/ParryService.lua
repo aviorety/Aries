@@ -27,4 +27,19 @@ function ParryService:parry()
 end
 
 
+function ParryService:dungeon_parry()
+    if not self.closest_entity then
+        return
+    end
+
+    local screen_view = workspace.CurrentCamera:WorldToScreenPoint(self.closest_entity.HumanoidRootPart.Position)
+
+    self.remote:FireServer(
+        workspace.CurrentCamera.CFrame,
+        {screen_view.X, screen_view.Y},
+        false
+    )
+end
+
+
 return ParryService
