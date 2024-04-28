@@ -3,13 +3,6 @@ local SocialService = game:GetService('SocialService')
 local ParryService = {}
 
 
-function ParryService:get_parry_remote()
-    local remote = SocialService:FindFirstChildOfClass('RemoteEvent')
-
-    return remote
-end
-
-
 function ParryService:parry()
     if not self.closest_entity then
         return
@@ -32,11 +25,11 @@ function ParryService:dungeon_parry()
         return
     end
 
-    local screen_view = workspace.CurrentCamera:WorldToScreenPoint(self.closest_entity.HumanoidRootPart.Position)
+    --local screen_view = workspace.CurrentCamera:WorldToScreenPoint(self.closest_entity.HumanoidRootPart.Position)
 
     self.remote:FireServer(
         workspace.CurrentCamera.CFrame,
-        {screen_view.X, screen_view.Y},
+        workspace.CurrentCamera.CFrame,
         false
     )
 end
