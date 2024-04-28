@@ -36,23 +36,6 @@ function Player:get_ping()
 end
 
 
-function Player:parry()
-    if not self.closest_entity then
-        return
-    end
-
-    local screen_view = workspace.CurrentCamera:WorldToScreenPoint(self.closest_entity.HumanoidRootPart.Position)
-
-    self.remote:FireServer(
-        0.5,
-        workspace.CurrentCamera.CFrame,
-        {[self.closest_entity.Name] = screen_view},
-        {screen_view.X, screen_view.Y},
-        false
-    )
-end
-
-
 function Player:claim_playtime_rewards()
     for index = 1, 6 do
         ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/ClaimPlaytimeReward']:InvokeServer(index)
@@ -62,7 +45,8 @@ end
 
 function Player:claim_rewards()
     Player.claim_playtime_rewards()
-    
+
+    ReplicatedStorage.Remote.RemoteEvent:FireServer('ClaimLoginReward')
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/RedeemQuestsType']:InvokeServer('Battlepass', 'Weekly')
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/RedeemQuestsType']:InvokeServer('Battlepass', 'Daily')
 end
