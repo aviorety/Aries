@@ -3,6 +3,27 @@ local Player = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviore
 local World = {}
 
 
+function World:get_ball()
+    local ball_models = {}
+
+    for _, object in workspace.Balls:GetChildren() do
+        if object:IsA('Model') then
+            table.insert(ball_models, object)
+
+            continue
+        end
+
+        if not object:GetAttribute('realBall') then
+            continue
+        end
+
+        return object
+    end
+
+    return ball_models
+end
+
+
 function World:get_closest_entity()
     local closest_entity = nil
     local minimal_dot_product = -math.huge
