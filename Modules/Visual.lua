@@ -1,3 +1,5 @@
+local Debris = game:GetService('Debris')
+
 local Visual = {}
 
 
@@ -12,14 +14,17 @@ function Visual:hit_particle()
 
     asset = asset:Clone()
     asset.Parent = self.ball
+    asset.Position = self.ball.Position
 
     for _, object in asset:GetChildren() do
-        if not object:IsA('ParticleEmmiter') then
+        if not object:IsA('ParticleEmitter') then
             continue
         end
 
         object:Emit(object:GetAttribute('EmitCount'))
     end
+
+    Debris:AddItem(object, 2)
 end
 
 
