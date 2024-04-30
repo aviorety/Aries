@@ -5,7 +5,7 @@ function Visual:hit_particle()
     local asset = self.assets.HitParticles.Main:FindFirstChild(self.asset_name)
     
     if not object then
-        warn(`asset {self.asset_name} not found. Try using these assets: unpack(self.assets.HitParticles:GetChildren())`)
+        warn(`asset {self.asset_name} not found. Try using these assets: {unpack(self.assets.HitParticles:GetChildren())}`)
 
         return
     end
@@ -14,8 +14,6 @@ function Visual:hit_particle()
     asset.Parent = workspace.Terrain
     asset.Position = self.origin
 
-    warn(`asset has been spawned`)
-
     for _, object in asset:GetChildren() do
         if not object:IsA('ParticleEmmiter') then
             continue
@@ -23,8 +21,6 @@ function Visual:hit_particle()
 
         object:Emit(object:GetAttribute('EmitCount'))
     end
-
-    warn(`asset has been emited`)
 end
 
 
