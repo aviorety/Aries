@@ -2,13 +2,13 @@ local Visual = {}
 
 
 function Visual:hit_particle()
-    local asset = self.assets.HitParticles:FindFirstChild(self.asset_name)
+    local asset = self.assets.HitParticles.Main:FindFirstChild(self.asset_name)
     
     if not object then
         return
     end
 
-    asset = object:Clone()
+    asset = asset:Clone()
     asset.Parent = workspace.Terrain
     asset.Position = self.origin
 
