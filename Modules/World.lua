@@ -12,7 +12,7 @@ function World:get_balls()
 
     for _, object in workspace.Balls:GetChildren() do
         if object:IsA('Model') then
-            table.insert(ball_models, object)
+            table.insert(models, object)
 
             continue
         end
@@ -28,7 +28,7 @@ function World:get_balls()
         return parts
     end
 
-    return ball_models
+    return models
 end
 
 
