@@ -34,16 +34,36 @@ function Dungeon:get_current_floor()
 end
 
 
+function Dungeon:find_bot()
+    local bot = workspace.Alive:FindFirstChildOfClass('Actor')
+
+    if not bot then
+        return
+    end
+
+    if not Player.alive(bot) then
+        return
+    end
+
+    return bot
+end
+
+
 function Dungeon:get_position()
     local y_speed = 2
     local y_distance = 5
     local x_z_distance = 10
-    
-    local y_offset = 100 - (math.sin(tick() * y_speed) * y_distance)
-    local x_offset = math.sin(tick()) * distance
-    local z_offset = math.cos(tick()) * distance
 
-    local result = self.CFrame + Vector3.new(x_offset, y_offset, z_offset)
+    local y_offset = 20 - (math.sin(tick() * y_speed) * y_distance)
+    local result = nil
+
+    local bot = Dungeon.find_bot()
+
+    if bot then
+        result = bot.HumanoidRootPart.CFrame + Vector3.new(0, y_offset, 0)
+    else
+        result = self.CFrame + Vector3.new(0, y_offset, 0)
+    end
 
     return result
 end
