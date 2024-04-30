@@ -5,6 +5,8 @@ local World = {}
 
 function World:get_ball()
     local ball_models = {}
+    local client_ball = nil
+    local server_ball = nil
 
     for _, object in workspace.Balls:GetChildren() do
         if object:IsA('Model') then
@@ -14,10 +16,17 @@ function World:get_ball()
         end
 
         if not object:GetAttribute('realBall') then
-            continue
+            client_ball = object
+        else
+            server_ball = object
         end
+    end
 
-        return object
+    if client_ball and server_ball then
+        return {
+            client = client_ball,
+            server = server_ball
+        }
     end
 
     return ball_models
