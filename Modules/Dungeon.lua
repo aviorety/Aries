@@ -24,7 +24,7 @@ end
 
 
 function Dungeon:get_current_floor()
-    local current_floor = dungeon_floors:FindFirstChild(`FLOOR_{self}`)
+    local current_floor = self.dungeon_floors:FindFirstChild(`FLOOR_{self.current_floor}`)
 
     if not current_floor then
         return
