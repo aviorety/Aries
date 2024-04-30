@@ -1,6 +1,7 @@
 local Debris = game:GetService('Debris')
 
 local Visual = {}
+Visual.balls_hiden = false
 
 
 function Visual:hit_particle()
@@ -27,6 +28,57 @@ function Visual:hit_particle()
 end
 
 
+function Visual:hide_balls()
+    Visual.balls_hiden = true
+
+    for _, object in workspace.Balls:GetDescendants() do
+        if object == self.ball then
+            continue
+        end
+
+        if object:IsA('Part') then
+            object.Transparency = 1
+        end
+
+        if object:IsA('Highlight') then
+            object.FillTransparency = 1
+            object.OutlineTransparency = 1
+
+            local connection = nil
+
+            connection = object.Changed:Connect(function()
+                if not Visual.balls_hiden then
+                    connection:Disconnect()
+                end
+
+                object.FillTransparency = 1
+                object.OutlineTransparency = 1
+            end)
+        end
+    end
+end
+
+
+function Visual:unhide_balls()
+    Visual.balls_hiden = false
+
+    for _, object in workspace.Balls:GetDescendants() do
+        if object == self.ball then
+            continue
+        end
+
+        if object:IsA('Part') then
+            object.Transparency = 0
+        end
+
+        if object:IsA('Highlight') then
+            object.FillTransparency = 0
+            object.OutlineTransparency = 0
+        end
+    end
+end
+
+
 function Visual:change_ball()
     local asset = self.assets.Balls:FindFirstChild(self.asset_name)
 
@@ -37,7 +89,7 @@ function Visual:change_ball()
     end
 
     asset = asset:Clone()
-    asset.Parent = workspace.Balls
+    asset.Parent = workspace
     asset.Weld.Part1 = self.ball
 end
 
@@ -54,7 +106,7 @@ function Visual:remove_ball()
             continue
         end
 
-        ball_asset:Destroy()
+        object:Destroy()
     end
 end
 
