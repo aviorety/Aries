@@ -41,7 +41,7 @@ function Library:close()
 
 	main_tween:Play()
 	main_tween.Completed:Once(function()
-		if Library.open then
+		if Library.enabled then
 			return
 		end
 
@@ -70,7 +70,7 @@ function Library:new()
 	local tabs = game:GetObjects('rbxassetid://17290916582')[1]
 	tabs.Parent = container.Container
 
-	local mobile_button = game:GetObjects('rbxassetid://17253950757')[1]
+	local mobile_button = game:GetObjects('rbxassetid://17338575060')[1]
 	mobile_button.Parent = container
 
 	UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
