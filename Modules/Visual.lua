@@ -11,20 +11,15 @@ function Visual:hit_particle()
     end
 
     asset = asset:Clone()
-    asset.Parent = workspace.Terrain
-    asset.Position = self.origin
+    asset.Parent = self.ball
 
-    task.delay(0.05, function()
-        for _, object in asset:GetChildren() do
-            if not object:IsA('ParticleEmmiter') then
-                continue
-            end
-    
-            object:Emit(object:GetAttribute('EmitCount'))
+    for _, object in asset:GetChildren() do
+        if not object:IsA('ParticleEmmiter') then
+            continue
         end
-    end)
 
-    warn(`delay`)
+        object:Emit(object:GetAttribute('EmitCount'))
+    end
 end
 
 
