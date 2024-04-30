@@ -43,8 +43,16 @@ function Player:claim_playtime_rewards()
 end
 
 
+function Player:claim_event_daily()
+    for index = 1, 30 do
+        ReplicatedStorage.Remote.RemoteFunction:InvokeServer('ClaimNewDailyLoginReward', index)  
+    end
+end
+
+
 function Player:claim_rewards()
     Player.claim_playtime_rewards()
+    Player.claim_event_daily()
 
     ReplicatedStorage.Remote.RemoteEvent:FireServer('ClaimLoginReward')
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/RedeemQuestsType']:InvokeServer('Battlepass', 'Weekly')
