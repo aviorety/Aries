@@ -3,10 +3,12 @@ local Player = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviore
 local World = {}
 
 
-function World:get_ball()
-    local ball_models = {}
-    local client_ball = nil
-    local server_ball = nil
+function World:get_balls()
+    local models = {}
+    local parts = {
+        server = nil,
+        client = nil
+    }
 
     for _, object in workspace.Balls:GetChildren() do
         if object:IsA('Model') then
@@ -15,18 +17,15 @@ function World:get_ball()
             continue
         end
 
-        if not object:GetAttribute('realBall') then
-            client_ball = object
+        if object:GetAttribute('realBall') then
+            parts.server = object
         else
-            server_ball = object
+            parts.client = object
         end
     end
 
-    if client_ball and server_ball then
-        return {
-            client = client_ball,
-            server = server_ball
-        }
+    if parts.server or parts.client then
+        return parts
     end
 
     return ball_models
