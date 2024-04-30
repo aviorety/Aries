@@ -1,3 +1,5 @@
+local Player = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Modules/Player.lua'))()
+
 local Dungeon = {}
 
 
