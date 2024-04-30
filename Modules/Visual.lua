@@ -14,7 +14,6 @@ function Visual:hit_particle()
 
     asset = asset:Clone()
     asset.Parent = self.ball
-    asset.Position = self.ball.Position
 
     for _, object in asset:GetChildren() do
         if not object:IsA('ParticleEmitter') then
