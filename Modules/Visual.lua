@@ -24,7 +24,7 @@ function Visual:hit_particle()
         object:Emit(object:GetAttribute('EmitCount'))
     end
 
-    Debris:AddItem(object, 2)
+    Debris:AddItem(asset, 2)
 end
 
 
