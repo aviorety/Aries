@@ -1,7 +1,7 @@
 local Dungeon = {}
 
 
-function Dungoen:get_current_zone()
+function Dungeon:get_current_zone()
     local current_zone = workspace:GetAttribute('Dungeons_CurrentZone')
 
     if not current_zone then
