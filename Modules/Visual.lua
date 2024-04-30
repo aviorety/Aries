@@ -14,13 +14,17 @@ function Visual:hit_particle()
     asset.Parent = workspace.Terrain
     asset.Position = self.origin
 
-    for _, object in asset:GetChildren() do
-        if not object:IsA('ParticleEmmiter') then
-            continue
+    task.delay(0.05, function()
+        for _, object in asset:GetChildren() do
+            if not object:IsA('ParticleEmmiter') then
+                continue
+            end
+    
+            object:Emit(object:GetAttribute('EmitCount'))
         end
+    end)
 
-        object:Emit(object:GetAttribute('EmitCount'))
-    end
+    warn(`delay`)
 end
 
 
