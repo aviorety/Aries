@@ -28,53 +28,63 @@ function Visual:hit_particle()
 end
 
 
-function Visual:hide_balls()
+function Visual:hide_client_ball()
     Visual.balls_hiden = true
+    self.Transparency = 1
 
-    for _, object in workspace.Balls:GetDescendants() do
-        if object == self.ball then
-            continue
-        end
+    local highlight = self:FindFirstChildOfClass('Highlight')
 
-        if object:IsA('Part') then
-            object.Transparency = 1
-        end
+    if not highlight then
+        highlight.FillTransparency = 1
+        highlight.OutlineTransparency = 1
+    
+        local connection = nil
+    
+        connection = highlight.Changed:Connect(function()
+            if not Visual.balls_hiden then
+                connection:Disconnect()
+            end
+    
+            highlight.FillTransparency = 1
+            highlight.OutlineTransparency = 1
+        end)
+    end
 
-        if object:IsA('Highlight') then
-            object.FillTransparency = 1
-            object.OutlineTransparency = 1
+    local trail = self:FindFirstChildOfClass('Trail')
 
-            local connection = nil
+    if trail then
+        trail.Enabled = false
 
-            connection = object.Changed:Connect(function()
-                if not Visual.balls_hiden then
-                    connection:Disconnect()
-                end
+        local connection = nil
 
-                object.FillTransparency = 1
-                object.OutlineTransparency = 1
-            end)
-        end
+        connection = trail.Changed:Connect(function()
+            if not Visual.balls_hiden then
+                connection:Disconnect()
+            end
+
+            trail.Enabled = false
+        end)
     end
 end
 
 
-function Visual:unhide_balls()
+function Visual:unhide_client_ball()
     Visual.balls_hiden = false
+    self.Transparency = 0
 
-    for _, object in workspace.Balls:GetDescendants() do
-        if object == self.ball then
-            continue
-        end
+    local highlight = self:FindFirstChildOfClass('Highlight')
 
-        if object:IsA('Part') then
-            object.Transparency = 0
-        end
+    if not highlight then
+        return
+    end
 
-        if object:IsA('Highlight') then
-            object.FillTransparency = 0
-            object.OutlineTransparency = 0
-        end
+    highlight.FillTransparency = 0
+    highlight.OutlineTransparency = 0
+
+    local trail = self:FindFirstChildOfClass('Trail')
+
+    if trail then
+        trail.Enabled = true
     end
 end
 
@@ -89,12 +99,20 @@ function Visual:change_ball()
     end
 
     asset = asset:Clone()
-    asset.Parent = workspace
-    asset.Weld.Part1 = self.ball
+    asset.Parent = self.ball
+    asset.Anchored = true
+    
+    self.ball.Changed:Connect(function()
+        asset.Position = self.ball.Position
+    end)
+
+    Visual.hide_client_ball(self.ball)
 end
 
 
 function Visual:remove_ball()
+    Visual.unhide_client_ball(self.ball)
+
     for _, object in self.ball:GetChildren() do
         if not object:IsA('Part') then
             continue
