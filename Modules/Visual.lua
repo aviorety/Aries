@@ -4,8 +4,8 @@ local Visual = {}
 function Visual:hit_particle()
     local asset = self.assets.HitParticles.Main:FindFirstChild(self.asset_name)
     
-    if not object then
-        warn(`asset {self.asset_name} not found. Try using these assets: {unpack(self.assets.HitParticles:GetChildren())}`)
+    if not asset then
+        warn(`asset {self.asset_name} not found. Try using these assets: {unpack(self.assets.HitParticles.Main:GetChildren())}`)
 
         return
     end
