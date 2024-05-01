@@ -52,19 +52,15 @@ end
 
 
 function Dungeon:get_position()
-    local y_speed = 2
-    local y_distance = 5
-    local x_z_distance = 10
-
-    local y_offset = 20 - (math.sin(tick() * y_speed) * y_distance)
+    local offset = 35
     local result = nil
 
     local bot = Dungeon.find_bot()
 
     if bot then
-        result = bot.HumanoidRootPart.CFrame + Vector3.new(0, y_offset, 0)
+        result = bot.HumanoidRootPart.CFrame + Vector3.new(0, offset, 0)
     else
-        result = self.CFrame + Vector3.new(0, y_offset, 0)
+        result = self.CFrame + Vector3.new(0, offset, 0)
     end
 
     return result
