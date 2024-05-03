@@ -52,7 +52,7 @@ end
 
 
 function Dungeon:get_position()
-    local offset = 35
+    local offset = math.min(45 + (self.current_zone * 2), 100)
     local result = nil
 
     local bot = Dungeon.find_bot()
@@ -60,7 +60,7 @@ function Dungeon:get_position()
     if bot then
         result = bot.HumanoidRootPart.CFrame + Vector3.new(0, offset, 0)
     else
-        result = self.CFrame + Vector3.new(0, offset, 0)
+        result = self.current_floor.CFrame + Vector3.new(0, offset, 0)
     end
 
     return result
