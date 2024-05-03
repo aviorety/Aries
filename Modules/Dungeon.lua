@@ -1,7 +1,6 @@
 local Player = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Modules/Player.lua'))()
 
 local Dungeon = {}
---test
 
 function Dungeon:get_current_zone()
     local current_zone = workspace:GetAttribute('Dungeons_CurrentZone')
