@@ -4,6 +4,38 @@ local Visual = {}
 Visual.balls_hiden = false
 
 
+function Visual:remove_aura()
+    for _, object in self.torso:GetChildren() do
+        local asset = self.assets.Auras.Main:FindFirstChild(object.Name)
+
+        if not asset then
+            continue
+        end
+
+        object:Destroy()
+    end
+end
+
+
+function Visual:set_aura()
+    Visual.remove_aura({
+        torso = self.torso,
+        assets = self.assets
+    })
+
+    local asset = self.assets.Auras.Main:FindFirstChild(self.asset_name)
+    
+    if not asset then
+        warn(`asset {self.asset_name} not found. Try using these assets: {unpack(self.assets.Auras.Main:GetChildren())}`)
+
+        return
+    end
+
+    asset = asset:Clone()
+    asset.Parent = self.torso
+end
+
+
 function Visual:hit_particle()
     local asset = self.assets.HitParticles.Main:FindFirstChild(self.asset_name)
     
