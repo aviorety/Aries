@@ -1,3 +1,4 @@
+local RunService = game:GetService('RunService')
 local Debris = game:GetService('Debris')
 
 local Player = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Modules/Player.lua'))()
