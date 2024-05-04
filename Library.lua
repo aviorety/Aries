@@ -273,14 +273,14 @@ function Library:new()
 			local number = math.floor(((self.maximum_value - self.minimum_value) * result) + self.minimum_value)
 			local slider_size = math.clamp(result, 0.001, 0.999)
 			
-			self.Fill.UIGradient.Transparency = NumberSequence.new({
+			self.slider.Box.Fill.UIGradient.Transparency = NumberSequence.new({
 				NumberSequenceKeypoint.new(0, 0),
 				NumberSequenceKeypoint.new(slider_size, 0),
 				NumberSequenceKeypoint.new(math.min(slider_size + 0.001, 1), 1),
 				NumberSequenceKeypoint.new(1, 1)
 			})
 			
-			self.Glow.UIGradient.Transparency = NumberSequence.new({
+			self.slider.Box.Glow.UIGradient.Transparency = NumberSequence.new({
 				NumberSequenceKeypoint.new(0, 0),
 				NumberSequenceKeypoint.new(slider_size, 0),
 				NumberSequenceKeypoint.new(math.min(slider_size + 0.03, 1), 1),
@@ -289,7 +289,7 @@ function Library:new()
 
 			Library.flags[self.flag] = number
 
-			self.TextLabel.Text = number
+			self.slider.Number.Text = number
 			self.callback(number)
 		end
 
@@ -297,7 +297,7 @@ function Library:new()
 			Library.slider_drag = true
 			
 			while Library.slider_drag do
-				Slider.update_slider(self)
+				Module.update_slider(self)
 				
 				task.wait()
 			end
@@ -307,7 +307,7 @@ function Library:new()
 			local drag = false
 			local section = self.section == 'left' and left_section or right_section
 
-			local slider = game:GetObjects('rbxassetid://17382405626')[1]
+			local slider = game:GetObjects('rbxassetid://17382846106')[1]
 			slider.Parent = section
 			slider.TextLabel.Text = self.name
 			slider.Number.Text = self.value
@@ -315,7 +315,7 @@ function Library:new()
 			Library.flags[self.flag] = self.value
 			self.callback(self.value)
 
-			slider.Hitbox.MouseButton1Down:Connect(function()
+			slider.Box.Hitbox.MouseButton1Down:Connect(function()
 				if Library.slider_drag then
 					return
 				end
@@ -326,7 +326,7 @@ function Library:new()
 					callback = self.callback,
 
 					maximum_value = self.maximum_value,
-					minumum_value = self.minumum_value,
+					minimum_value = self.minimum_value,
 				})
 			end)
 			
