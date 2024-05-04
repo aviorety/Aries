@@ -1,7 +1,51 @@
 local Debris = game:GetService('Debris')
 
+local Player = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Modules/Player.lua'))()
+
 local Visual = {}
 Visual.balls_hiden = false
+
+
+function Visual:remove_ambient()
+    self.Loops.disconnect('ambient')
+
+    for _, object in workspace:GetChildren() do
+        local asset = self.assets.Ambient:FindFirstChild(object.Name)
+
+        if not asset then
+            continue
+        end
+
+        object:Destroy()
+    end
+end
+
+
+function Visual:set_ambient()
+    Visual.remove_ambient({
+        Loops = self.Loops,
+        assets = self.assets
+    })
+
+    local asset = self.assets.Ambient:FindFirstChild(self.asset_name)
+    
+    if not asset then
+        warn(`asset {self.asset_name} not found. Try using these assets: {unpack(self.assets.Ambient:GetChildren())}`)
+
+        return
+    end
+
+    asset = asset:Clone()
+    asset.Parent = workspace
+    
+    self.Loops['ambient'] = RunService.Heartbeat:Connect(function()
+        if not Player.alive(self.character) then
+            return
+        end
+
+        asset.Position = self.character.HumanoidRootPart.Position + Vector3.new(0, 35, 0)
+    end)
+end
 
 
 function Visual:remove_aura()
