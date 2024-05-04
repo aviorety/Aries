@@ -4,16 +4,16 @@ local ParryService = {}
 
 
 function ParryService:parry()
-    if not self.closest_entity then
+    if not self.entity_aim then
         return
     end
 
-    local screen_view = workspace.CurrentCamera:WorldToScreenPoint(self.closest_entity.HumanoidRootPart.Position)
+    local screen_view = workspace.CurrentCamera:WorldToScreenPoint(self.entity_aim.HumanoidRootPart.Position)
 
     self.remote:FireServer(
         0.5,
         workspace.CurrentCamera.CFrame,
-        {[self.closest_entity.Name] = screen_view},
+        {[self.entity_aim.Name] = screen_view},
         {screen_view.X, screen_view.Y},
         false
     )
