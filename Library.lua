@@ -287,20 +287,17 @@ function Library:new()
 				NumberSequenceKeypoint.new(1, 1)
 			})
 
-			self.TextLabel.Text = number
+			Library.flags[self.flag] = number
 
-			return number
+			self.TextLabel.Text = number
+			self.callback(number)
 		end
 
 		function Module:slider_loop()
 			Library.slider_drag = true
 			
 			while Library.slider_drag do
-				Slider.update_slider({
-					slider = self.slider,
-					maximum_value = self.maximum_value,
-					minumum_value = self.minumum_value
-				})
+				Slider.update_slider(self)
 				
 				task.wait()
 			end
@@ -315,6 +312,9 @@ function Library:new()
 			slider.TextLabel.Text = self.name
 			slider.Number.Text = self.value
 
+			Library.flags[self.flag] = self.value
+			self.callback(self.value)
+
 			slider.Hitbox.MouseButton1Down:Connect(function()
 				if Library.slider_drag then
 					return
@@ -322,8 +322,11 @@ function Library:new()
 
 				Module.slider_loop({
 					slider = slider,
+					flag = self.flag,
+					callback = self.callback,
+
 					maximum_value = self.maximum_value,
-					minumum_value = self.minumum_value
+					minumum_value = self.minumum_value,
 				})
 			end)
 			
