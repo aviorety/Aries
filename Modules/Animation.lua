@@ -16,7 +16,7 @@ Animation.storage = {
     [`Shadow Mirage`] = ReplicatedStorage.Misc.SwordPacksVFX[`Shadow Mirage`],
     [`Void Scythe`] = ReplicatedStorage.Misc.SwordPacksVFX[`Void Scythe`]
 }
-Animation.playing = false
+Animation.current = nil
 
 
 function Animation:play()
@@ -32,14 +32,14 @@ function Animation:play()
         return
     end
 
-    Animation.playing = true
+    Animation.current = self.asset
 
     local animation = self.humanoid:LoadAnimation(animation_asset)
     animation:Play()
 
     repeat
         task.wait()
-    until not Animation.playing or not animation
+    until Animation.current ~= self.asset or not animation
 
     if animation then
         animation:Stop()
