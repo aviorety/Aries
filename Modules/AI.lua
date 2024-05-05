@@ -48,9 +48,10 @@ end
 
 
 function AI:find_path()
-    if (tick() - AI.offset_delay) > 2 then
-        local x_z = math.random(-30, 30)
-        local offset = Vector3.new(x_z, 0, x_z)
+    if (tick() - AI.offset_delay) > 1 then
+        local x = math.random(-50, 50)
+        local z = math.random(-50, 50)
+        local offset = Vector3.new(x, 0, z)
     
         AI.offset = self.ball_spawn + offset
         AI.offset_delay = tick()
@@ -58,8 +59,9 @@ function AI:find_path()
         local ball_spawn_direction = (self.ball_spawn - AI.offset).Unit
         local ball_spawn_distance = (self.ball_spawn - AI.offset).Magnitude
     
-        if ball_spawn_distance <= 15 then
-            local maximum_distance = math.max(15 - ball_spawn_distance, 1)
+        if ball_spawn_distance <= 30 then
+            local maximum_distance = math.max(30 - ball_spawn_distance, 1)
+            warn(maximum_distance)
             AI.offset += (ball_spawn_direction * maximum_distance)
         end
     end
