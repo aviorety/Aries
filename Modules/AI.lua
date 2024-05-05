@@ -32,7 +32,7 @@ end
 
 
 function AI:move_to()
-    local path = path_check({
+    local path = AI.path_check({
         origin = self.character.HumanoidRootPart.Position,
         goal = self.goal,
         map = self.map
