@@ -6,10 +6,11 @@ filter.IgnoreWater = true
 local AI = {}
 AI.offset = Vector3.zero
 AI.offset_delay = tick()
+AI.exclude = {}
 
 
 function AI:path_check()
-    filter.FilterDescendantsInstances = self.exclude
+    filter.FilterDescendantsInstances = AI.exclude
 
     local direction = (self.origin - self.goal).Unit
     local distance = (self.origin - self.goal).Magnitude
