@@ -18,6 +18,10 @@ Library.flags = {}
 Library.enabled = true
 Library.slider_drag = false
 
+Library.drag = false
+Library.drag_position = nil
+Library.start_position = nil
+
 
 function Library:open()
 	self.Container.Visible = true
@@ -56,6 +60,28 @@ function Library:close()
 end
 
 
+function Library:drag()
+	if not Library.drag_position then
+		return
+	end
+	
+	if not Library.start_position then
+		return
+	end
+	
+	local delta = self.input.Position - Library.drag_position
+	local position = UDim2.new(Library.start_position.X.Scale, Library.start_position.X.Offset + delta.X, Library.start_position.Y.Scale, Library.start_position.Y.Offset + delta.Y)
+
+	TweenService:Create(self.container.Container, TweenInfo.new(0.2), {
+		Position = position
+	}):Play()
+
+    TweenService:Create(self.container.Shadow, TweenInfo.new(0.2), {
+		Position = position
+	}):Play()
+end
+
+
 function Library:visible()
 	Library.enabled = not Library.enabled
 
@@ -76,6 +102,31 @@ function Library:new()
 
 	local mobile_button = game:GetObjects('rbxassetid://17338575060')[1]
 	mobile_button.Parent = container
+
+	container.Container.InputBegan:Connect(function(input: InputObject)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            Library.drag = true
+            Library.drag_position = input.Position
+            Library.start_position = container.Container.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+					Library.drag = false
+					Library.drag_position = nil
+					Library.start_position = nil
+                end
+            end)
+        end
+    end)
+
+	UserInputService.InputChanged:Connect(function(input: InputObject)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            Library.drag({
+                input = input,
+                container = container
+            })
+        end
+    end)
 
 	UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
 		if process then
