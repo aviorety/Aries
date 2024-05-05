@@ -28,6 +28,8 @@ function Animation:play()
 
     if not animation_asset then
         warn(`Animation asset hasn't been found in {self.asset}`)
+
+        return
     end
 
     Animation.playing = true
@@ -40,7 +42,7 @@ function Animation:play()
     until not Animation.playing or not animation
 
     if animation then
-        animation:Play()
+        animation:Stop()
     end
 end
 
