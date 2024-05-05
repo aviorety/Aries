@@ -388,11 +388,191 @@ function Library:new()
 			end)
 		end
 
+		function Module:create_dropdown()
+			local section = self.section == 'left' and left_section or right_section
+			local list_size = 6
+			local open = false
+
+			local option = game:GetObjects('rbxassetid://17401027015')[1]
+
+			local dropdown = game:GetObjects('rbxassetid://17401016934')[1]
+			dropdown.Parent = section
+			dropdown.Box.TextLabel.Text = self.option
+
+			local Dropdown = {}
+
+			function Dropdown:open()
+				TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.4), {
+					Size = UDim2.new(0, 202, 0, list_size)
+				}):Play()
+
+				TweenService:Create(dropdown, TweenInfo.new(0.4), {
+					Size = UDim2.new(0, 215, 0, 30 + list_size)
+				}):Play()
+
+				TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(0.4), {
+					Rotation = 180
+				}):Play()
+			end
+			
+			function Dropdown:close()
+				TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.4), {
+					Size = UDim2.new(0, 202, 0, 0)
+				}):Play()
+
+				TweenService:Create(dropdown, TweenInfo.new(0.4), {
+					Size = UDim2.new(0, 215, 0, 36)
+				}):Play()
+
+				TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(0.4), {
+					Rotation = 0
+				}):Play()
+			end
+
+			function Dropdown:clear()
+				for _, object in dropdown.Box.Options:GetChildren() do
+					if object.Name ~= 'Option' then
+						continue
+					end
+
+					object:Destroy()
+				end
+			end
+
+			function Dropdown:select_option()
+				TweenService:Create(self, TweenInfo.new(0.4), {
+					TextTransparency = 0
+				}):Play()
+
+				for _, object in dropdown.Box.Options:GetChildren() do
+					if object.Name ~= 'Option' then
+						continue
+					end
+
+					if object == self then
+						continue
+					end
+
+					TweenService:Create(object, TweenInfo.new(0.4), {
+						TextTransparency = 0.5
+					}):Play()
+				end
+
+				dropdown.Box.TextLabel.Text = self.Text
+			end
+
+			function Dropdown:update()
+				Dropdown.clear()
+
+				for _, value in self.options do
+					list_size += 23
+
+					local new_option = option:Clone()
+					new_option.Parent = dropdown.Box.Options
+					new_option.Text = value
+	
+					if value == self.option then
+						new_option.TextTransparency = 0
+					end
+	
+					new_option.MouseButton1Click:Connect(function()
+						Library.flags[self.flag] = value
+						self.callback(value)
+
+						Dropdown.select_option(new_option)
+					end)
+				end
+			end
+
+			Dropdown.update(self)
+			Library.flags[self.flag] = self.option
+
+			dropdown.MouseButton1Click:Connect(function()
+				open = not open
+
+				if open then
+					Dropdown.open()
+				else
+					Dropdown.close()
+				end
+			end)
+
+			return Dropdown
+		end
+
 		return Module
 	end
 
 	return Tab
 end
+
+
+--[[
+
+local main = Library.new()
+local tab = main.create_tab('Tab')
+
+tab.create_title({
+	name = 'Section',
+	section = 'left'
+})
+
+tab.create_toggle({
+	name = 'Toggle',
+	flag = 'toggle',
+
+	section = 'left',
+	enabled = false,
+
+	callback = function(state: boolean)
+		warn(state)
+	end
+})
+
+tab.create_slider({
+	name = 'Slider',
+	flag = 'slider',
+
+	section = 'left',
+
+	value = 50,
+	minimum_value = 0,
+	maximum_value = 100,
+
+	callback = function(value: number)
+		warn(value)
+	end
+})
+
+tab.create_dropdown({
+	name = 'Dropdown',
+	flag = 'dropdown',
+
+	section = 'left',
+
+	option = 'Option 1',
+	options = {'Option 1', 'Option 2'},
+
+	callback = function(value: string)
+		warn(value)
+	end
+})
+
+tab.create_dropdown({
+	name = 'Dropdown',
+	flag = 'dropdown',
+
+	section = 'left',
+
+	option = 'Option 1',
+	options = {'Option 1', 'Option 2'},
+
+	callback = function(value: string)
+		warn(value)
+	end
+})
+
+]]
 
 
 return Library
