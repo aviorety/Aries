@@ -4,15 +4,15 @@ local Stats = game:GetService('Stats')
 local Player = {}
 
 
-function Player:alive(instance: any, parent_check: boolean)
-    local character_model = instance
+function Player:alive(object: any, parent_check: boolean)
+    local character_model = object
 
-    if instance:IsA('Player') then
-        if not instance.Character then
+    if object:IsA('Player') then
+        if not object.Character then
             return
         end
 
-        character_model = instance.Character
+        character_model = object.Character
     end
 
     if character_model.Parent ~= workspace.Alive and parent_check then
