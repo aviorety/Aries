@@ -23,6 +23,10 @@ function AI:path_check()
         return
     end
 
+    if raycast.Instance.Parent ~= self.map.Border then
+        return
+    end
+
     return raycast.Position
 end
 
@@ -30,7 +34,8 @@ end
 function AI:move_to()
     local path = path_check({
         origin = self.character.HumanoidRootPart.Position,
-        goal = self.goal
+        goal = self.goal,
+        map = self.map
     })
 
     if path then
@@ -60,7 +65,8 @@ function AI:find_path()
 
     AI.move_to({
         character = self.character,
-        goal = AI.offset
+        goal = AI.offset,
+        map = self.map
     })
 end
 
