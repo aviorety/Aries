@@ -545,9 +545,7 @@ tab.create_slider({
 })
 
 tab.create_dropdown({
-	name = 'Dropdown',
 	flag = 'dropdown',
-
 	section = 'left',
 
 	option = 'Option 1',
