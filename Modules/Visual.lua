@@ -40,7 +40,7 @@ function Visual:set_ambient()
     asset.Parent = workspace
     
     self.Loops['ambient'] = RunService.Heartbeat:Connect(function()
-        if not Player.alive(self.character) then
+        if not Player.alive(self.character, false) then
             return
         end
 

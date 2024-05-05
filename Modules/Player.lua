@@ -4,7 +4,7 @@ local Stats = game:GetService('Stats')
 local Player = {}
 
 
-function Player:alive(object: any, parent_check: boolean)
+function Player.alive(object: any, parent_check: boolean)
     local character_model = object
 
     if object:IsA('Player') then
