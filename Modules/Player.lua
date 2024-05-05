@@ -15,6 +15,10 @@ function Player:alive()
         character_model = self.Character
     end
 
+    if character_model.Parent ~= workspace.Alive then
+        return
+    end
+
     if not character_model:FindFirstChild('HumanoidRootPart') then
         return
     end
