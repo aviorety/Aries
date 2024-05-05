@@ -18,7 +18,7 @@ Library.flags = {}
 Library.enabled = true
 Library.slider_drag = false
 
-Library.drag = false
+Library.dragging = false
 Library.drag_position = nil
 Library.start_position = nil
 
@@ -105,13 +105,13 @@ function Library:new()
 
 	container.Container.InputBegan:Connect(function(input: InputObject)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            Library.drag = true
+            Library.dragging = true
             Library.drag_position = input.Position
             Library.start_position = container.Container.Position
 
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
-					Library.drag = false
+					Library.dragging = false
 					Library.drag_position = nil
 					Library.start_position = nil
                 end
