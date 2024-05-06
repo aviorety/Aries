@@ -33,7 +33,7 @@ end
 
 
 function AI:move_to()
-    local path = AI.path_check({
+    --[[local path = AI.path_check({
         origin = self.character.HumanoidRootPart.Position,
         goal = self.goal,
         map = self.map
@@ -41,14 +41,14 @@ function AI:move_to()
 
     if path then
         self.goal = path
-    end
+    end]]
 
     self.character.Humanoid:MoveTo(self.goal)
 end
 
 
 function AI:find_path()
-    if (tick() - AI.offset_delay) > 1.5 then
+    if (tick() - AI.offset_delay) >= 1.5 then
         local distance = 50 - (self.ball.Velocity.Magnitude / 10)
 
         local x = math.random(-distance, distance)
