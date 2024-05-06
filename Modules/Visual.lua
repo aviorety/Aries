@@ -7,6 +7,41 @@ local Visual = {}
 Visual.balls_hiden = false
 
 
+function Visual:remove_trail()
+    for _, object in self.torso:GetChildren() do
+        local asset = self.assets.Trails[self.asset_name]:FindFirstChild(object.Name)
+
+        if not asset then
+            continue
+        end
+
+        object:Destroy()
+    end
+end
+
+
+function Visual:set_trail()
+    Visual:remove_trail({
+        torso = self.torso
+        assets = self.assets
+        asset_name = self.asset_name
+    })
+
+    local asset = self.assets.Trails:FindFirstChild(self.asset_name)
+    
+    if not asset then
+        warn(`asset {self.asset_name} not found. Try using these assets: {unpack(self.assets.Trails:GetChildren())}`)
+
+        return
+    end
+
+    for _, object in asset:GetChildren() do
+        local asset_part = object:Clone()
+        asset_part.Parent = self.torso
+    end
+end
+
+
 function Visual:remove_ambient()
     self.Loops.disconnect('ambient')
 
