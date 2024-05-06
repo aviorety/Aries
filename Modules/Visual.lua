@@ -22,8 +22,8 @@ end
 
 function Visual:set_trail()
     Visual.remove_trail({
-        torso = self.torso
-        assets = self.assets
+        torso = self.torso,
+        assets = self.assets,
         asset_name = self.asset_name
     })
 
