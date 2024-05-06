@@ -12,11 +12,11 @@ function ParryService:parry()
     local direction = workspace.CurrentCamera.CFrame
 
     if self.direction == 'High' then
-        direction = CFrame.new(workspace.CurrentCamera.CFrame.Position, Vector3.new(0, math.rad(10000), 0))
+        direction = CFrame.new(workspace.CurrentCamera.CFrame.Position, Vector3.new(0, math.rad(1000), 0))
     elseif self.direction == 'Random' then
-        local x_rad = math.random(-10000, 10000)
-        local y_rad = math.random(-10000, 10000)
-        local z_rad = math.random(-10000, 10000)
+        local x_rad = math.random(-1000, 1000)
+        local y_rad = math.random(-1000, 1000)
+        local z_rad = math.random(-1000, 1000)
 
         direction = CFrame.new(workspace.CurrentCamera.CFrame.Position, Vector3.new(math.rad(x_rad), math.rad(y_rad), math.rad(z_rad)))
     end
