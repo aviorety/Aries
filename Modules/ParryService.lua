@@ -8,13 +8,24 @@ function ParryService:parry()
         return
     end
 
-    local screen_view = workspace.CurrentCamera:WorldToScreenPoint(self.entity_aim.HumanoidRootPart.Position)
+    local target_position = workspace.CurrentCamera:WorldToScreenPoint(self.entity_aim.HumanoidRootPart.Position)
+    local direction = workspace.CurrentCamera.CFrame
+
+    if self.direction == 'High' then
+        direction = CFrame.new(workspace.CurrentCamera.CFrame.Position, Vector3.new(0, math.rad(10000), 0))
+    elseif self.direction == 'Random' then
+        local x_rad = math.random(-10000, 10000)
+        local y_rad = math.random(-10000, 10000)
+        local z_rad = math.random(-10000, 10000)
+
+        direction = CFrame.new(workspace.CurrentCamera.CFrame.Position, Vector3.new(math.rad(x_rad), math.rad(y_rad), math.rad(z_rad)))
+    end
 
     self.remote:FireServer(
         0.5,
-        workspace.CurrentCamera.CFrame,
-        {[self.entity_aim.Name] = screen_view},
-        {screen_view.X, screen_view.Y},
+        direction,
+        {[self.entity_aim.Name] = target_position},
+        {target_position.X, target_position.Y},
         false
     )
 end
