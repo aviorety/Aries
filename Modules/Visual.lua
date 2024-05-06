@@ -35,10 +35,16 @@ function Visual:set_trail()
         return
     end
 
-    for _, object in asset:GetChildren() do
-        local asset_part = object:Clone()
-        asset_part.Parent = self.torso
-    end
+    local attachment_1 = asset.Trail1:Clone()
+    attachment_1.Parent = self.torso
+
+    local attachment_2 = asset.Trail2:Clone()
+    attachment_2.Parent = self.torso
+
+    local trail = asset.Trail:Clone()
+    trail.Parent = self.torso
+    trail.Attachment0 = attachment_1
+    trail.Attachment1 = attachment_2
 end
 
 
