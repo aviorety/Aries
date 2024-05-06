@@ -48,7 +48,7 @@ end
 
 
 function AI:find_path()
-    if (tick() - AI.offset_delay) > 0.7 then
+    if (tick() - AI.offset_delay) > 1.5 then
         local distance = 50 - (self.ball.Velocity.Magnitude / 10)
 
         local x = math.random(-distance, distance)
