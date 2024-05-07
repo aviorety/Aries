@@ -45,7 +45,7 @@ function Animation:play()
 
     repeat
         task.wait()
-    until Animation.current ~= self.asset or not animation
+    until Animation.current ~= self.asset
 
     if animation then
         animation:Stop()
