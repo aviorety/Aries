@@ -23,8 +23,6 @@ function Animation:play()
     local animation_asset = ReplicatedStorage.Misc.Emotes:FindFirstChild(self.asset)
 
     if not animation_asset then
-        warn(`Animation asset hasn't been found in {self.asset}`)
-
         return
     end
 
