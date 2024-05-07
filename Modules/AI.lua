@@ -23,11 +23,11 @@ function AI:find_path()
         local z = math.random(-distance, distance)
         local offset = Vector3.new(x, 0, z)
     
-        AI.offset = self.ball.Position + offset
+        AI.offset = self.ball.CFrame + offset
         AI.offset_delay = tick()
     end
 
-    AI.goal = AI.goal:Lerp(CFrame.new(AI.offset, Vector3.zero), 0.05)
+    AI.goal = AI.goal:Lerp(AI.offset, 0.05)
     AI.move_to({
         character = self.character,
         goal = AI.goal
