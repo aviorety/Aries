@@ -2,11 +2,11 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
 local Crate = {}
 Crate.storage = {
-    NormalSwordCrate = workspace.Spawn.Crates.NormalSwordCrate,
-    NormalExplosionCrate = workspace.Spawn.Crates.NormalExplosionCrate,
+    NormalSwordCrate = workspace.Spawn.Crates:FindFirstChild('NormalSwordCrate'),
+    NormalExplosionCrate = workspace.Spawn.Crates:FindFirstChild('NormalExplosionCrate'),
 
-    PremiumSwordCrate = workspace.Spawn.Crates.PremiumSwordCrate,
-    PremiumExplosionCrate = workspace.Spawn.Crates.PremiumExplosionCrate
+    PremiumSwordCrate = workspace.Spawn.Crates:FindFirstChild('PremiumSwordCrate'),
+    PremiumExplosionCrate = workspace.Spawn.Crates:FindFirstChild('PremiumExplosionCrate')
 }
 
 
