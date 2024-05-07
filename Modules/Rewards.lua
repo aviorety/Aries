@@ -3,7 +3,7 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Rewards = {}
 
 
-function Rewards:redeem_quests_type()
+function Rewards:claim_battlepass_rewards()
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/RedeemQuestsType']:InvokeServer('Battlepass', 'Weekly')
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/RedeemQuestsType']:InvokeServer('Battlepass', 'Daily')
 end
@@ -16,14 +16,14 @@ function Rewards:claim_playtime_rewards()
 end
 
 
-function Rewards:claim_clan_quests()
+function Rewards:claim_clan_rewards()
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/ClaimAllDailyMissions']:InvokeServer('Daily')
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/ClaimAllDailyMissions']:InvokeServer('Weekly')
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/ClaimAllClanBPQuests']:InvokeServer()
 end
 
 
-function Rewards:claim_login_reward()
+function Rewards:claim_login_rewards()
     ReplicatedStorage.Remote.RemoteEvent:FireServer('ClaimLoginReward')
 
     for index = 1, 30 do
@@ -33,10 +33,10 @@ end
 
 
 function Rewards:claim_rewards()
-    Rewards.redeem_quests_type()
+    Rewards.claim_battlepass_rewards()
     Rewards.claim_playtime_rewards()
-    Rewards.claim_clan_quests()
-    Rewards.claim_login_reward()
+    Rewards.claim_clan_rewards()
+    Rewards.claim_login_rewards()
 end
 
 
