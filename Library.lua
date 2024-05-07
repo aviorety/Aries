@@ -223,8 +223,8 @@ function Library:new()
 		tab.Parent = tabs
 		tab.TextLabel.Text = self
 
-		local left_section = game:GetObjects('rbxassetid://17291069143')[1]
-		local right_section = game:GetObjects('rbxassetid://17291072834')[1]
+		local left_section = game:GetObjects('rbxassetid://17416841186')[1]
+		local right_section = game:GetObjects('rbxassetid://17416847297')[1]
 
 		if container.Container:FindFirstChild('RightSection') then
 			left_section.Visible = false
