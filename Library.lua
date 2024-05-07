@@ -62,6 +62,8 @@ end
 function Library:load_flags()
 	if not isfile(`Aries/{game.PlaceId}.lua`) then
 		Library.save_flags()
+
+		return
 	end
 
 	local flags = readfile(`Aries/{game.PlaceId}.lua`)
@@ -75,7 +77,14 @@ function Library:load_flags()
 	Library.flags = HttpService:JSONDecode(flags)
 end
 
-Library.load_flags()
+
+task.defer(function()
+	repeat
+		task.wait()
+	until Library.core
+
+	Library.load_flags()
+end)
 
 
 function Library:open()
