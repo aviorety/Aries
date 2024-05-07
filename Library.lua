@@ -1,4 +1,5 @@
 local CoreGui = game:GetService('CoreGui')
+local HttpService = game:GetService('HttpService')
 local TweenService = game:GetService('TweenService')
 local LocalPlayer = game:GetService('Players').LocalPlayer
 local UserInputService = game:GetService('UserInputService')
@@ -17,10 +18,64 @@ local Library = {}
 Library.flags = {}
 Library.enabled = true
 Library.slider_drag = false
+Library.core = nil
 
 Library.dragging = false
 Library.drag_position = nil
 Library.start_position = nil
+
+
+if not isfolder(`Aries`) then
+	makefolder(`Aries`)
+end
+
+
+function Library:exist()
+	if not Library.core then
+		return
+	end
+
+	if not Library.core.Parent then
+		return
+	end
+
+	return true
+end
+
+
+function Library:save_flags()
+	if not Library.exist() then
+		warn('no lib')
+
+		return
+	end
+
+	local flags = HttpService:JSONEncode(Library.flags)
+	writefile(`Aries/{game.PlaceId}.lua`, flags)
+
+	for index, value in Library.flags do
+		warn(index, value)
+	end
+end
+
+
+function Library:load_flags()
+	if not isfile(`Aries/{game.PlaceId}.lua`) then
+		Library.save_flags()
+	end
+
+	local flags = readfile(`Aries/{game.PlaceId}.lua`)
+
+	if not flags then
+		Library.save_flags()
+
+		return
+	end
+	
+	Library.flags = HttpService:JSONDecode(flags)
+end
+
+Library.load_flags()
 
 
 function Library:open()
@@ -97,6 +152,8 @@ function Library:new()
 	local container = game:GetObjects('rbxassetid://17291182583')[1]
 	container.Parent = CoreGui
 
+	Library.core = container
+
 	local tabs = game:GetObjects('rbxassetid://17290916582')[1]
 	tabs.Parent = container.Container
 
@@ -133,7 +190,7 @@ function Library:new()
 			return
 		end
 
-		if not container or not container.Parent then
+		if not Library.exist() then
 			return
 		end
 
@@ -293,24 +350,27 @@ function Library:new()
 			toggle.Parent = section
 			toggle.TextLabel.Text = self.name
 
-			Library.flags[self.flag] = self.enabled
-			self.callback(self.enabled)
+			if not Library.flags[self.flag] then
+				Library.flags[self.flag] = self.enabled
+			end
+
+			self.callback(Library.flags[self.flag])
 			
 			Module.update_toggle({
-				state = self.enabled,
+				state = Library.flags[self.flag],
 				toggle = toggle
 			})
 
 			toggle.MouseButton1Click:Connect(function()
-				self.enabled = not self.enabled
-				Library.flags[self.flag] = self.enabled
+				Library.flags[self.flag] = not Library.flags[self.flag]
+				Library.save_flags()
 
 				Module.update_toggle({
-					state = self.enabled,
+					state = Library.flags[self.flag],
 					toggle = toggle
 				})
 
-				self.callback(self.enabled)
+				self.callback(Library.flags[self.flag])
 			end)
 		end
 
@@ -363,8 +423,12 @@ function Library:new()
 			slider.TextLabel.Text = self.name
 			slider.Number.Text = self.value
 
-			Library.flags[self.flag] = self.value
-			self.callback(self.value)
+			if not Library.flags[self.flag] then
+				Library.flags[self.flag] = self.value
+			end
+
+			slider.Number.Text = Library.flags[self.flag]
+			self.callback(Library.flags[self.flag])
 
 			slider.Box.Hitbox.MouseButton1Down:Connect(function()
 				if Library.slider_drag then
@@ -384,6 +448,7 @@ function Library:new()
 			UserInputService.InputEnded:Connect(function(input: InputObject, process: boolean)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 					Library.slider_drag = false
+					Library.save_flags()
 				end
 			end)
 		end
@@ -440,7 +505,7 @@ function Library:new()
 			end
 
 			function Dropdown:select_option()
-				TweenService:Create(self, TweenInfo.new(0.4), {
+				TweenService:Create(self.new_option, TweenInfo.new(0.4), {
 					TextTransparency = 0
 				}):Play()
 
@@ -449,7 +514,7 @@ function Library:new()
 						continue
 					end
 
-					if object == self then
+					if object.Text == Library.flags[self.flag] then
 						continue
 					end
 
@@ -458,7 +523,7 @@ function Library:new()
 					}):Play()
 				end
 
-				dropdown.Box.TextLabel.Text = self.Text
+				dropdown.Box.TextLabel.Text = self.new_option.Text
 			end
 
 			function Dropdown:update()
@@ -471,21 +536,32 @@ function Library:new()
 					new_option.Parent = dropdown.Box.Options
 					new_option.Text = value
 	
-					if value == self.option then
+					if value == Library.flags[self.flag] then
 						new_option.TextTransparency = 0
 					end
 	
 					new_option.MouseButton1Click:Connect(function()
 						Library.flags[self.flag] = value
-						self.callback(value)
+						Library.save_flags()
+						
+						self.callback(Library.flags[self.option])
 
-						Dropdown.select_option(new_option)
+						Dropdown.select_option({
+							new_option = new_option,
+							flag = self.flag
+						})
 					end)
 				end
 			end
 
+			if not Library.flags[self.flag] then
+				Library.flags[self.flag] = self.option
+			else
+				dropdown.Box.TextLabel.Text = Library.flags[self.flag]
+			end
+			
+			self.callback(Library.flags[self.option])
 			Dropdown.update(self)
-			Library.flags[self.flag] = self.option
 
 			dropdown.MouseButton1Click:Connect(function()
 				open = not open
@@ -507,9 +583,7 @@ function Library:new()
 end
 
 
---[[
-
-local main = Library.new()
+--[[local main = Library.new()
 local tab = main.create_tab('Tab')
 
 tab.create_title({
@@ -525,7 +599,7 @@ tab.create_toggle({
 	enabled = false,
 
 	callback = function(state: boolean)
-		warn(state)
+		
 	end
 })
 
@@ -540,7 +614,7 @@ tab.create_slider({
 	maximum_value = 100,
 
 	callback = function(value: number)
-		warn(value)
+		
 	end
 })
 
@@ -552,7 +626,7 @@ tab.create_dropdown({
 	options = {'Option 1', 'Option 2'},
 
 	callback = function(value: string)
-		warn(value)
+		
 	end
 })
 
@@ -566,11 +640,9 @@ tab.create_dropdown({
 	options = {'Option 1', 'Option 2'},
 
 	callback = function(value: string)
-		warn(value)
+		
 	end
-})
-
-]]
+})]]
 
 
 return Library
