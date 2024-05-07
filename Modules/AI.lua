@@ -5,44 +5,12 @@ filter.IgnoreWater = true
 
 local AI = {}
 AI.offset = Vector3.zero
+AI.goal = CFrame.new()
 AI.offset_delay = tick()
 AI.exclude = {}
 
 
-function AI:path_check()
-    filter.FilterDescendantsInstances = AI.exclude
-
-    local direction = (self.origin - self.goal).Unit
-    local distance = (self.origin - self.goal).Magnitude
-    local raycast = workspace:Raycast(self.origin, direction * distance)
-
-    if not raycast then
-        return
-    end
-
-    if not raycast.Instance.CanCollide then
-        return
-    end
-
-    if raycast.Instance.Parent ~= self.map.Border then
-        return
-    end
-
-    return raycast.Position
-end
-
-
 function AI:move_to()
-    --[[local path = AI.path_check({
-        origin = self.character.HumanoidRootPart.Position,
-        goal = self.goal,
-        map = self.map
-    })
-
-    if path then
-        self.goal = path
-    end]]
-
     self.character.Humanoid:MoveTo(self.goal)
 end
 
@@ -59,11 +27,13 @@ function AI:find_path()
         AI.offset_delay = tick()
     end
 
+    AI.goal = AI.goal:Lerp(CFrame.new(AI.offset, Vector3.zero), 0.05)
     AI.move_to({
         character = self.character,
-        goal = AI.offset,
-        map = self.map
+        goal = AI.goal
     })
+
+    warn('updated')
 end
 
 
