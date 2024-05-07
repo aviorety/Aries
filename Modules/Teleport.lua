@@ -31,7 +31,7 @@ function Teleport:dungeon_teleport()
         end
     end
 
-    self.player.Characetr.HumanoidRootPart.CFrame = teleport_world.CFrame + Vector3.new(5)
+    self.player.Character.HumanoidRootPart.CFrame = teleport_world.CFrame + Vector3.new(5)
 
     repeat
         task.wait()
