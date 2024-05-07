@@ -45,8 +45,6 @@ end
 
 function Library:save_flags()
 	if not Library.exist() then
-		warn('no lib')
-
 		return
 	end
 
@@ -78,13 +76,7 @@ function Library:load_flags()
 end
 
 
-task.defer(function()
-	repeat
-		task.wait()
-	until Library.core
-
-	Library.load_flags()
-end)
+Library.load_flags()
 
 
 function Library:open()
@@ -592,7 +584,7 @@ function Library:new()
 end
 
 
---[[local main = Library.new()
+local main = Library.new()
 local tab = main.create_tab('Tab')
 
 tab.create_title({
@@ -651,7 +643,7 @@ tab.create_dropdown({
 	callback = function(value: string)
 		
 	end
-})]]
+})
 
 
 return Library
