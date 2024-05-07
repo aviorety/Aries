@@ -50,10 +50,6 @@ function Library:save_flags()
 
 	local flags = HttpService:JSONEncode(Library.flags)
 	writefile(`Aries/{game.PlaceId}.lua`, flags)
-
-	for index, value in Library.flags do
-		warn(index, value)
-	end
 end
 
 
@@ -73,6 +69,10 @@ function Library:load_flags()
 	end
 	
 	Library.flags = HttpService:JSONDecode(flags)
+
+	for index, value in Library.flags do
+		warn(index, value)
+	end
 end
 
 
@@ -584,7 +584,7 @@ function Library:new()
 end
 
 
-local main = Library.new()
+--[[local main = Library.new()
 local tab = main.create_tab('Tab')
 
 tab.create_title({
@@ -643,7 +643,7 @@ tab.create_dropdown({
 	callback = function(value: string)
 		
 	end
-})
+})]]
 
 
 return Library
