@@ -30,7 +30,7 @@ function AI:find_path()
     AI.goal = AI.goal:Lerp(AI.offset, 0.05)
     AI.move_to({
         character = self.character,
-        goal = AI.goal
+        goal = AI.goal.Position
     })
 
     warn('updated')
