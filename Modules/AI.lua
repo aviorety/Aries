@@ -4,10 +4,32 @@ filter.FilterType = Enum.RaycastFilterType.Exclude
 filter.IgnoreWater = true
 
 local AI = {}
+AI.exclude = {}
+
+AI.offset_delay = tick()
 AI.offset = Vector3.zero
 AI.goal = CFrame.new()
-AI.offset_delay = tick()
-AI.exclude = {}
+
+AI.last_jump = tick()
+AI.last_double_jump = tick()
+
+
+function AI:random_jump()
+    if (tick() - last_jump) < 1 then
+        return
+    end
+
+    if math.random() < 0.9 then
+        return
+    end
+
+    if self.FloorMaterial == Enum.Material.Air then
+        return
+    end
+
+    last_jump = tick()
+    self:ChangeState(Enum.HumanoidStateType.Jumping)
+end
 
 
 function AI:move_to()
@@ -28,12 +50,13 @@ function AI:find_path()
     end
 
     AI.goal = AI.goal:Lerp(AI.offset, 0.01)
+    
     AI.move_to({
         character = self.character,
         goal = AI.goal.Position
     })
 
-    warn('updated')
+    AI.random_jump(self.character.Humanoid)
 end
 
 
