@@ -23,7 +23,12 @@ function Teleport:dungeon_teleport()
     end
 
     self.root.CFrame = teleport_world.CFrame + Vector3.new(5)
-    warn(self.level)
+    
+    task.delay(1, function()
+        ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RE/Dungeons-DifficultyVote']:FireServer(self.mode)
+    end)
+
+    warn(self.level, self.mode)
 end
 
 
