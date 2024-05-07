@@ -40,4 +40,21 @@ function Player:get_ping()
 end
 
 
+function Player:get_level()
+    local leaderstats = self:FindFirstChild('leaderstats')
+
+    if not leaderstats then
+        return
+    end
+
+    local level = leaderstats:FindFirstChild('Level')
+
+    if not level then
+        return
+    end
+
+    return level.Value
+end
+
+
 return Player
