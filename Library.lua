@@ -545,7 +545,7 @@ function Library:new()
 						Library.flags[self.flag] = value
 						Library.save_flags()
 						
-						self.callback(Library.flags[self.option])
+						self.callback(Library.flags[self.flag])
 
 						Dropdown.select_option({
 							new_option = new_option,
@@ -561,7 +561,7 @@ function Library:new()
 				dropdown.Box.TextLabel.Text = Library.flags[self.flag]
 			end
 			
-			self.callback(Library.flags[self.option])
+			self.callback(Library.flags[self.flag])
 			Dropdown.update(self)
 
 			dropdown.MouseButton1Click:Connect(function()
@@ -627,21 +627,7 @@ tab.create_dropdown({
 	options = {'Option 1', 'Option 2'},
 
 	callback = function(value: string)
-		
-	end
-})
-
-tab.create_dropdown({
-	name = 'Dropdown',
-	flag = 'dropdown',
-
-	section = 'left',
-
-	option = 'Option 1',
-	options = {'Option 1', 'Option 2'},
-
-	callback = function(value: string)
-		
+		warn(value)
 	end
 })]]
 
