@@ -32,6 +32,17 @@ function Animation:play()
     local animation = self.humanoid:LoadAnimation(Animation.storage[self.asset])
     animation:Play()
 
+    animation.Stopped:Once(function()
+        if Animation.current ~= self.asset then
+            return
+        end
+
+        Animation.play({
+            asset = self.asset,
+            humanoid = self.humanoid
+        })
+    end)
+
     repeat
         task.wait()
     until Animation.current ~= self.asset or not animation
