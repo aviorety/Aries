@@ -15,7 +15,7 @@ function Teleport:dungeon_teleport()
     local teleport_world = Teleport.worlds[1]
 
     for index, value in Teleport.worlds do
-        if self.level <= index then
+        if self.level >= index then
             teleport_world = value
 
             break
