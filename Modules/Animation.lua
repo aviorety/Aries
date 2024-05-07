@@ -4,6 +4,7 @@ local Animation = {}
 Animation.storage = {}
 Animation.current = nil
 
+
 function Animation:load_animations()
     for _, object in ReplicatedStorage.Misc.Emotes:GetChildren() do
         if not object:IsA('Animation') then
@@ -40,5 +41,7 @@ function Animation:play()
     end
 end
 
+
+Animation.load_animations()
 
 return Animation
