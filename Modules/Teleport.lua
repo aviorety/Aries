@@ -23,6 +23,7 @@ function Teleport:dungeon_teleport()
     end
 
     self.root.CFrame = teleport_world.CFrame + Vector3.new(5)
+    warn(self.level)
 end
 
 
