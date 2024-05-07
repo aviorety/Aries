@@ -11,7 +11,13 @@ function Animation:load_animations()
             continue
         end
 
-        table.insert(Animation.storage, object)
+        local emote_name = object:GetAttribute('EmoteName')
+
+        if not emote_name then
+            continue
+        end
+
+        Animation.storage[emote_name] = object
     end
 end
 
@@ -21,15 +27,9 @@ function Animation:play()
         return
     end
 
-    local animation_asset = ReplicatedStorage.Misc.Emotes:FindFirstChild(self.asset)
-
-    if not animation_asset then
-        return
-    end
-
     Animation.current = self.asset
 
-    local animation = self.humanoid:LoadAnimation(animation_asset)
+    local animation = self.humanoid:LoadAnimation(Animation.storage[self.asset])
     animation:Play()
 
     repeat
