@@ -1,3 +1,5 @@
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+
 local Teleport = {}
 Teleport.places = {
     dungeon = 16581648071,
@@ -17,8 +19,6 @@ function Teleport:dungeon_teleport()
     for index, value in Teleport.worlds do
         if self.level >= index then
             teleport_world = value
-
-            break
         end
     end
 
@@ -27,8 +27,6 @@ function Teleport:dungeon_teleport()
     task.delay(1, function()
         ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RE/Dungeons-DifficultyVote']:FireServer(self.mode)
     end)
-
-    warn(self.level, self.mode)
 end
 
 
