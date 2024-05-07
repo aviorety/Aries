@@ -49,18 +49,18 @@ function Library:save_flags()
 	end
 
 	local flags = HttpService:JSONEncode(Library.flags)
-	writefile(`Aries/{game.PlaceId}.lua`, flags)
+	writefile(`Aries/{game.GameId}.lua`, flags)
 end
 
 
 function Library:load_flags()
-	if not isfile(`Aries/{game.PlaceId}.lua`) then
+	if not isfile(`Aries/{game.GameId}.lua`) then
 		Library.save_flags()
 
 		return
 	end
 
-	local flags = readfile(`Aries/{game.PlaceId}.lua`)
+	local flags = readfile(`Aries/{game.GameId}.lua`)
 
 	if not flags then
 		Library.save_flags()
