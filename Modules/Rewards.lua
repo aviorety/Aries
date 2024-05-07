@@ -22,8 +22,13 @@ function Rewards:claim_rewards()
     Rewards.claim_event_daily()
 
     ReplicatedStorage.Remote.RemoteEvent:FireServer('ClaimLoginReward')
+    ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/ClaimAllClanBPQuests']:InvokeServer()
+
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/RedeemQuestsType']:InvokeServer('Battlepass', 'Weekly')
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/RedeemQuestsType']:InvokeServer('Battlepass', 'Daily')
+    
+    ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/ClaimAllDailyMissions']:InvokeServer('Daily')
+    ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RF/ClaimAllDailyMissions']:InvokeServer('Weekly')
 end
 
 
