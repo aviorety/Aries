@@ -7,7 +7,7 @@ Teleport.places = {
     ranked = 14915220621
 }
 
-local queues = workspace.Space:FindFirstChild('Queues')
+local queues = workspace.Spawn:FindFirstChild('Queues')
 
 if queues then
     Teleport.worlds = {
