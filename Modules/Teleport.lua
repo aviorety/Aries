@@ -3,7 +3,7 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Teleport = {}
 Teleport.places = {
     dungeon = 16581648071,
-    dungeon_round = 16581648071,
+    dungeon_round = 16456370330,
     ranked = 14915220621
 }
 
