@@ -31,11 +31,11 @@ function Teleport:dungeon_teleport()
         end
     end
 
-    self.Characetr.HumanoidRootPart.CFrame = teleport_world.CFrame + Vector3.new(5)
+    self.player.Characetr.HumanoidRootPart.CFrame = teleport_world.CFrame + Vector3.new(5)
 
     repeat
         task.wait()
-    until self.PlayerGui.DungeonsVote.Enabled
+    until self.player.PlayerGui.DungeonsVote.Enabled
     
     ReplicatedStorage.Packages._Index['sleitnick_net@0.1.0'].net['RE/Dungeons-DifficultyVote']:FireServer(self.mode)
 end
