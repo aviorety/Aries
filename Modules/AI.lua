@@ -8,14 +8,16 @@ AI.exclude = {}
 
 AI.offset_delay = tick()
 AI.offset = Vector3.zero
+
 AI.goal = CFrame.new()
+AI.last_goal = CFrame.new()
 
 AI.last_jump = tick()
 AI.last_double_jump = tick()
 
 
 function AI:random_jump()
-    if (tick() - AI.last_jump) < 1 then
+    if (tick() - AI.last_jump) < math.random(1, 100) then
         return
     end
 
@@ -41,22 +43,27 @@ function AI:find_path()
     if (tick() - AI.offset_delay) >= 0.5 then
         local distance = 50 - (self.ball.Velocity.Magnitude / 10)
 
-        local x = math.random(-distance, distance)
-        local z = math.random(-distance, distance)
-        local offset = Vector3.new(x, 0, z)
-    
-        AI.offset = self.ball.CFrame + offset
+        local direction = self.target_root.CFrame.LookVector
+        local offset = direction * distance
+
+        AI.offset = self.target_root.CFrame + offset
         AI.offset_delay = tick()
     end
 
-    AI.goal = AI.goal:Lerp(AI.offset, 0.01)
-    
-    AI.move_to({
-        character = self.character,
-        goal = AI.goal.Position
-    })
+    AI.goal = AI.goal:Lerp(AI.offset, 0.04)
 
-    AI.random_jump(self.character.Humanoid)
+    local passed_distance = (AI.goal.Position - AI.last_goal.Position).Magnitude
+
+    if passed_distance >= 6 then
+        AI.last_goal = AI.goal
+
+        AI.move_to({
+            character = self.character,
+            goal = AI.goal.Position
+        })
+    
+        AI.random_jump(self.character.Humanoid)
+    end
 end
 
 
