@@ -69,10 +69,6 @@ function Library:load_flags()
 	end
 	
 	Library.flags = HttpService:JSONDecode(flags)
-
-	for index, value in Library.flags do
-		warn(index, value)
-	end
 end
 
 
