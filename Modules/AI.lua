@@ -15,8 +15,6 @@ AI.last_double_jump = tick()
 
 
 function AI:random_jump()
-    warn('test')
-
     if (tick() - AI.last_jump) < 1 then
         return
     end
