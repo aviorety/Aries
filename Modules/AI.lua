@@ -15,7 +15,9 @@ AI.last_double_jump = tick()
 
 
 function AI:random_jump()
-    if (tick() - last_jump) < 1 then
+    warn('test')
+
+    if (tick() - AI.last_jump) < 1 then
         return
     end
 
@@ -27,7 +29,7 @@ function AI:random_jump()
         return
     end
 
-    last_jump = tick()
+    AI.last_jump = tick()
     self:ChangeState(Enum.HumanoidStateType.Jumping)
 end
 
