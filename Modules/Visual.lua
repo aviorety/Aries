@@ -1,4 +1,5 @@
 local RunService = game:GetService('RunService')
+local Lighting = game:GetService('Lighting')
 local Debris = game:GetService('Debris')
 
 local Player = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Modules/Player.lua'))()
@@ -8,12 +9,29 @@ Visual.balls_hiden = false
 
 
 function Visual:remove_skybox()
+    for _, object in Lighting:GetChildren() do
+        if not object:IsA('Sky') then
+            continue
+        end
 
+        object:Destroy()
+    end
 end
 
 
 function Visual:set_skybox()
+    Visual:remove_skybox()
 
+    local asset = self.assets.Sky:FindFirstChild(self.asset_name)
+    
+    if not asset then
+        warn(`asset {self.asset_name} not found. Try using these assets: {unpack(self.assets.Sky:GetChildren())}`)
+
+        return
+    end
+
+    asset = asset:Clone()
+    asset.Parent = Lighting
 end
 
 
