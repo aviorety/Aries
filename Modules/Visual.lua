@@ -14,7 +14,7 @@ function Visual:remove_skybox()
             continue
         end
 
-        object:Destroy()
+        Debris:AddItem(object, 0)
     end
 end
 
