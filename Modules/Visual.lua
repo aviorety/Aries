@@ -20,7 +20,7 @@ end
 
 
 function Visual:set_skybox()
-    Visual:remove_skybox()
+    Visual.remove_skybox()
 
     local asset = self.assets.Sky:FindFirstChild(self.asset_name)
     
