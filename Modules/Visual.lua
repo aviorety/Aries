@@ -7,6 +7,16 @@ local Visual = {}
 Visual.balls_hiden = false
 
 
+function Visual:remove_skybox()
+
+end
+
+
+function Visual:set_skybox()
+
+end
+
+
 function Visual:remove_trail()
     for _, object in self.torso:GetChildren() do
         local asset = self.assets.Trails[self.asset_name]:FindFirstChild(object.Name)
