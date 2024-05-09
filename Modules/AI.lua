@@ -43,7 +43,7 @@ function AI:find_path()
     if (tick() - AI.offset_delay) >= 0.5 then
         local distance = 50 - (self.ball.Velocity.Magnitude / 5)
 
-        local direction = (self.target_root.Position - LocalPlayer.Character.HumanoidRootPart.Position).Unit
+        local direction = (self.target_root.Position - self.character.HumanoidRootPart.Position).Unit
         local offset = self.target_root.CFrame + (-direction * distance)
 
         AI.offset = offset
