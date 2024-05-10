@@ -31,7 +31,7 @@ function Tab:close()
 end
 
 
-function Tab:update_tabs()
+function Tab:update()
     for _, object in self.tabs:GetChildren() do
         if object.Name ~= 'Tab' then
             continue
@@ -55,10 +55,15 @@ function Tab:create()
     tab.IconBackground.Icon.Image = self.icon
 
     tab.MouseButton1Click:Connect(function()
-        Tab.update_tabs({
+        Tab.update({
             tabs = self.tabs,
             tab = tab
         })
+
+        self.Section.update(self)
+
+        self.left_section.Visible = true
+        self.right_section.Visible = true
     end)
 
     return tab
