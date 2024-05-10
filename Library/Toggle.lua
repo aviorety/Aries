@@ -33,10 +33,10 @@ function Toggle:create()
     toggle.ToggleName.Text = self.name
 
     toggle.MouseButton1Click:Connect(function()
-        self.library.flags[self.flag] = not self.library.flags[self.flag]
-        self.callback(self.library.flags[self.flag])
+        self.Library.flags[self.flag] = not self.Library.flags[self.flag]
+        self.callback(self.Library.flags[self.flag])
 
-        if self.library.flags[self.flag] then
+        if self.Library.flags[self.flag] then
             Toggle.enable(toggle)
         else
             Toggle.disable(toggle)
