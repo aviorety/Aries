@@ -1,3 +1,5 @@
+local TweenService = game:GetService('TweenService')
+
 local Section = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Section.lua'))()
 
 local Tab = {}
