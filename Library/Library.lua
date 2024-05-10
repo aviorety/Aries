@@ -78,4 +78,10 @@ function Library:__init()
 end
 
 
+--[[
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Library.lua'))()
+Library.__init()
+]]
+
+
 return Library
