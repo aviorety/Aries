@@ -1,3 +1,5 @@
+local Section = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Section.lua'))()
+
 local Tab = {}
 
 
@@ -60,7 +62,7 @@ function Tab:create()
             tab = tab
         })
 
-        self.Section.update(self)
+        Section.update(self)
 
         self.left_section.Visible = true
         self.right_section.Visible = true
