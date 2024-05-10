@@ -1,5 +1,7 @@
 local TweenService = game:GetService('TweenService')
 
+local Config = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Config.lua'))()
+
 local Toggle = {}
 
 
@@ -35,6 +37,8 @@ function Toggle:create()
     toggle.MouseButton1Click:Connect(function()
         self.Library.flags[self.flag] = not self.Library.flags[self.flag]
         self.callback(self.Library.flags[self.flag])
+        
+        Config.save_flags(self.Library)
 
         if self.Library.flags[self.flag] then
             Toggle.enable(toggle)
