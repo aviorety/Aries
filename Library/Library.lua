@@ -1,4 +1,5 @@
 local UserInputService = game:GetService('UserInputService')
+local TweenService = game:GetService('TweenService')
 local CoreGui = game:GetService('CoreGui')
 
 --[[
@@ -34,15 +35,27 @@ end
 function Library:__init()
     Library.clear()
 
-    local container = game:GetObjects('rbxassetid://17447962998')[1]
+    local container = game:GetObjects('rbxassetid://17448262149')[1]
     container.Parent = CoreGui
 
     function Library:open()
-        container.Container
+        TweenService:Create(container.Container, TweenInfo.new(0.4), {
+            Size = Udim2.new(0, 875, 0, 533)
+        }):Play()
+
+        TweenService:Create(container.Shadow, TweenInfo.new(0.4), {
+            Size = Udim2.new(0, 1008, 0, 628)
+        }):Play()
     end
 
     function Library:close()
-    
+        TweenService:Create(container.Container, TweenInfo.new(0.4), {
+            Size = Udim2.new(0, 0, 0, 0)
+        }):Play()
+
+        TweenService:Create(container.Shadow, TweenInfo.new(0.4), {
+            Size = Udim2.new(0, 875, 0, 533)
+        }):Play()
     end
 
     UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
