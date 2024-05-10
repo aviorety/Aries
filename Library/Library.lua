@@ -54,7 +54,7 @@ function Library:__init()
         }):Play()
 
         TweenService:Create(container.Shadow, TweenInfo.new(0.4), {
-            Size = UDim2.new(0, 875, 0, 533)
+            Size = UDim2.new(0, 0, 0, 0)
         }):Play()
     end
 
@@ -80,8 +80,10 @@ end
 
 --[[
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Library.lua'))()
-Library.__init()
+
 ]]
+
+Library.__init()
 
 
 return Library
