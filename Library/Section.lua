@@ -39,7 +39,7 @@ end
 
 
 function Section:create()
-    local section = game:GetObjects('rbxassetid://17448765120')[1]
+    local section = game:GetObjects('rbxassetid://17449483108')[1]
     section.Parent = self.side
     section.TopBackground.SectionName.Text = self.name
 
