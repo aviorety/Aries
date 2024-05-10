@@ -2,7 +2,8 @@ local UserInputService = game:GetService('UserInputService')
 local CoreGui = game:GetService('CoreGui')
 
 --[[
-local SaveManager = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/SaveManager.lua'))()
+local Config = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Config.lua'))()
+local Animation = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Animation.lua'))()
 
 local Tab = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Tab.lua'))()
 local Section = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Section.lua'))()
@@ -15,7 +16,8 @@ local Colorpicker = loadstring(game:HttpGet('https://raw.githubusercontent.com/a
 local Library = {}
 Library.flags = {}
 Library.container = nil
-Library.container_open = false
+Library.container_open = true
+Library.keybind = Enum.KeyCode.Insert
 
 
 function Library:clear()
@@ -34,6 +36,32 @@ function Library:__init()
 
     local container = game:GetObjects('rbxassetid://17447962998')[1]
     container.Parent = CoreGui
+
+    function Library:open()
+        container.Container
+    end
+
+    function Library:close()
+    
+    end
+
+    UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
+        if process then
+            return
+        end
+
+        if input.KeyCode ~= Library.keybind then
+            return
+        end
+
+        Library.container_open = not Library.container_open
+
+        if Library.container_open then
+            Library.open()
+        else
+            Library.close()
+        end
+    end)
 end
 
 
