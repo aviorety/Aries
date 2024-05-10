@@ -40,21 +40,21 @@ function Library:__init()
 
     function Library:open()
         TweenService:Create(container.Container, TweenInfo.new(0.4), {
-            Size = Udim2.new(0, 875, 0, 533)
+            Size = UDim2.new(0, 875, 0, 533)
         }):Play()
 
         TweenService:Create(container.Shadow, TweenInfo.new(0.4), {
-            Size = Udim2.new(0, 1008, 0, 628)
+            Size = UDim2.new(0, 1008, 0, 628)
         }):Play()
     end
 
     function Library:close()
         TweenService:Create(container.Container, TweenInfo.new(0.4), {
-            Size = Udim2.new(0, 0, 0, 0)
+            Size = UDim2.new(0, 0, 0, 0)
         }):Play()
 
         TweenService:Create(container.Shadow, TweenInfo.new(0.4), {
-            Size = Udim2.new(0, 875, 0, 533)
+            Size = UDim2.new(0, 875, 0, 533)
         }):Play()
     end
 
