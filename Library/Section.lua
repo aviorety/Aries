@@ -3,6 +3,10 @@ local Section = {}
 
 function Section:update()
     for _, object in self.container:GetChildren() do
+        if not object.Name:find('Section') then
+            return
+        end
+
         if object == self.left_section then
             continue
         end
