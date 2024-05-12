@@ -67,21 +67,21 @@ function Library:__init()
     tabs.Parent = container.Container.TabsManager
 
     function Library:open()
-        TweenService:Create(container.Container, TweenInfo.new(0.4), {
+        TweenService:Create(container.Container, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
             Size = UDim2.new(0, 875, 0, 533)
         }):Play()
 
-        TweenService:Create(container.Shadow, TweenInfo.new(0.4), {
+        TweenService:Create(container.Shadow, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
             Size = UDim2.new(0, 1008, 0, 628)
         }):Play()
     end
 
     function Library:close()
-        TweenService:Create(container.Container, TweenInfo.new(0.4), {
+        TweenService:Create(container.Container, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
             Size = UDim2.new(0, 0, 0, 0)
         }):Play()
 
-        TweenService:Create(container.Shadow, TweenInfo.new(0.4), {
+        TweenService:Create(container.Shadow, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
             Size = UDim2.new(0, 0, 0, 0)
         }):Play()
     end
@@ -162,24 +162,13 @@ function Library:__init()
                     flag = self.flag,
 
                     keycode = self.keycode,
-                    enabled = self.enabled,
                     callback = self.callback
                 })
 
                 if Library.flags[self.flag] then
                     Toggle.enable(toggle)
-
-                    warn(`toggle is enabled | flag: {Library.flags[self.flag]}`)
                 else
                     Toggle.disable(toggle)
-
-                    warn(`toggle is disabled | flag: {Library.flags[self.flag]}`)
-                end
-
-                if not Library.flags[self.flag] then
-                    Library.flags[self.flag] = self.enabled
-
-                    warn(`{self.flag} is not found | settings state to: {self.enabled}`)
                 end
 
                 self.callback(Library.flags[self.flag])
@@ -212,8 +201,6 @@ local auto_parry_section = blatant.create_section({
 auto_parry_section.create_toggle({
     name = 'Enabled',
     flag = 'auto_parry',
-
-    enabled = true,
     keycode = Enum.KeyCode.R,
 
     callback = function(result: boolean)
