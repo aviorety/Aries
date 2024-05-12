@@ -1,3 +1,4 @@
+local UserInputService = game:GetService('UserInputService')
 local TweenService = game:GetService('TweenService')
 
 local Config = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Config.lua'))()
@@ -33,6 +34,29 @@ function Toggle:create()
     local toggle = game:GetObjects('rbxassetid://17449386522')[1]
     toggle.Parent = self.section.Modules
     toggle.ToggleName.Text = self.name
+
+    UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
+        if process then
+            return
+        end
+
+        if not Library.exist() then
+            return
+        end
+
+        if keycode.KeyCode == self.keycode then
+            self.Library.flags[self.flag] = not self.Library.flags[self.flag]
+            self.callback(self.Library.flags[self.flag])
+            
+            Config.save_flags(self.Library)
+    
+            if self.Library.flags[self.flag] then
+                Toggle.enable(toggle)
+            else
+                Toggle.disable(toggle)
+            end
+        end
+    end)
 
     toggle.MouseButton1Click:Connect(function()
         self.Library.flags[self.flag] = not self.Library.flags[self.flag]
