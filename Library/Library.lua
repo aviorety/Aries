@@ -67,21 +67,21 @@ function Library:__init()
     tabs.Parent = container.Container.TabsManager
 
     function Library:open()
-        TweenService:Create(container.Container, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+        TweenService:Create(container.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
             Size = UDim2.new(0, 875, 0, 533)
         }):Play()
 
-        TweenService:Create(container.Shadow, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+        TweenService:Create(container.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
             Size = UDim2.new(0, 1008, 0, 628)
         }):Play()
     end
 
     function Library:close()
-        TweenService:Create(container.Container, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+        TweenService:Create(container.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
             Size = UDim2.new(0, 0, 0, 0)
         }):Play()
 
-        TweenService:Create(container.Shadow, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+        TweenService:Create(container.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
             Size = UDim2.new(0, 0, 0, 0)
         }):Play()
     end
