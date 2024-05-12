@@ -197,9 +197,6 @@ end
 
 --[[
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Library.lua'))()
-
-]]
-
 local main = Library.__init()
 
 local blatant = main.create_tab({
@@ -238,6 +235,7 @@ local settings = main.create_tab({
     name = 'Settings',
     icon = 'rbxassetid://17447924593'
 })
+]]
 
 
 return Library
