@@ -3,7 +3,6 @@ local TweenService = game:GetService('TweenService')
 local CoreGui = game:GetService('CoreGui')
 
 --[[
-local Config = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Config.lua'))()
 local Animation = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Animation.lua'))()
 
 local Slider = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Slider.lua'))()
@@ -11,30 +10,22 @@ local Dropdown = loadstring(game:HttpGet('https://raw.githubusercontent.com/avio
 local Colorpicker = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Colorpicker.lua'))()
 ]]
 
+local Config = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Config.lua'))()
+
 local Tab = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Tab.lua'))()
-local Toggle = {} --loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Toggle.lua'))()
-
-
-function Toggle:enable()
-
-end
-
-
-function Toggle:disable()
-
-end
-
-
-function Toggle:create()
-    local toggle = game:GetObjects('rbxassetid://')[1]
-end
-
+local Section = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Section.lua'))()
+local Toggle = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Toggle.lua'))()
 
 local Library = {}
 Library.flags = {}
 Library.container = nil
 Library.container_open = true
 Library.keybind = Enum.KeyCode.Insert
+
+
+if not isfolder(`Aries`) then
+	makefolder(`Aries`)
+end
 
 
 function Library:clear()
@@ -46,6 +37,22 @@ function Library:clear()
         object:Destroy()
     end
 end
+
+
+function Library:exist()
+	if not Library.container then
+		return
+	end
+
+	if not Library.container.Parent then
+		return
+	end
+
+	return true
+end
+
+
+Config.load_flags(Library)
 
 
 function Library:__init()
@@ -88,11 +95,7 @@ function Library:__init()
             return
         end
 
-        if not Library.container then
-            return
-        end
-
-        if not Library.container.Parent then
+        if not Library.exist() then
             return
         end
 
@@ -136,19 +139,50 @@ function Library:__init()
 
         function SectionManager:create_section()
             local side = self.side == 'right' and right_section or left_section
+            local section_size = 46
 
-            local section = Section.create()
+            local section = Section.create({
+                side = side,
+                name = self.name
+            })
 
             local ModuleManager = {}
 
             function ModuleManager:create_toggle()
-                Toggle.create({
+                section_size += 31
+                
+                section.Size = UDim2.new(0, 284, 0, section_size)
+                section.Modules.Size = UDim2.new(0, 284, 0, section_size - 33)
+
+                local toggle = Toggle.create({
                     section = section,
-                    name = self.name
-                    enabled = self.enabled
-                    callback = self.callback,
-                    library = Library
+                    Library = Library,
+
+                    name = self.name,
+                    flag = self.flag,
+
+                    keycode = self.keycode,
+                    enabled = self.enabled,
+                    callback = self.callback
                 })
+
+                if Library.flags[self.flag] then
+                    Toggle.enable(toggle)
+
+                    warn(`toggle is enabled | flag: {Library.flags[self.flag]}`)
+                else
+                    Toggle.disable(toggle)
+
+                    warn(`toggle is disabled | flag: {Library.flags[self.flag]}`)
+                end
+
+                if not Library.flags[self.flag] then
+                    Library.flags[self.flag] = self.enabled
+
+                    warn(`{self.flag} is not found | settings state to: {self.enabled}`)
+                end
+
+                self.callback(Library.flags[self.flag])
             end
 
             return ModuleManager
@@ -171,6 +205,23 @@ local main = Library.__init()
 local blatant = main.create_tab({
     name = 'Blatant',
     icon = 'rbxassetid://17447902260'
+})
+
+local auto_parry_section = blatant.create_section({
+    side = 'left',
+    name = 'AutoParry'
+})
+
+auto_parry_section.create_toggle({
+    name = 'Enabled',
+    flag = 'auto_parry',
+
+    enabled = true,
+    keycode = Enum.KeyCode.R,
+
+    callback = function(result: boolean)
+        warn(result)
+    end
 })
 
 local world = main.create_tab({
