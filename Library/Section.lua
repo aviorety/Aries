@@ -10,7 +10,7 @@ function Section:update()
         end
 
         if object == self.left_section then
-            TweenService:Create(object, TweenInfo.new(0.4), {
+            TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                 Position = UDim2.new(0.297, 0, 0.041, 0)
             }):Play()
 
@@ -18,18 +18,18 @@ function Section:update()
         end
 
         if object == self.right_section then
-            TweenService:Create(object, TweenInfo.new(0.4), {
+            TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                 Position = UDim2.new(0.648, 0, 0.041, 0)
             }):Play()
 
             continue
         end
 
-        TweenService:Create(object, TweenInfo.new(0.4), {
+        TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
             Position = UDim2.new(0.648, 0, 1, 0)
         }):Play()
 
-        TweenService:Create(object, TweenInfo.new(0.4), {
+        TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
             Position = UDim2.new(0.297, 0, 1, 0)
         }):Play()
 
