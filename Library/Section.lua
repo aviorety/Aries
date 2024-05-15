@@ -1,6 +1,7 @@
 local TweenService = game:GetService('TweenService')
 
 local Section = {}
+Section.asset = game:GetObjects('rbxassetid://17449483108')[1]
 
 
 function Section:update()
@@ -39,7 +40,7 @@ end
 
 
 function Section:create()
-    local section = game:GetObjects('rbxassetid://17449483108')[1]
+    local section = Section.asset:Clone()
     section.Parent = self.side
     section.TopBackground.SectionName.Text = self.name
 
