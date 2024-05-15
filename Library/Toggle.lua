@@ -4,6 +4,7 @@ local TweenService = game:GetService('TweenService')
 local Config = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Config.lua'))()
 
 local Toggle = {}
+Toggle.asset = game:GetObjects('rbxassetid://17449386522')[1]
 
 
 function Toggle:enable()
@@ -31,7 +32,7 @@ end
 
 
 function Toggle:create()
-    local toggle = game:GetObjects('rbxassetid://17449386522')[1]
+    local toggle = Toggle.asset:Clone()
     toggle.Parent = self.section.Modules
     toggle.ToggleName.Text = self.name
 
