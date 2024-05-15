@@ -51,6 +51,9 @@ function Library:__init()
     local container = game:GetObjects('rbxassetid://17448262149')[1]
     container.Parent = CoreGui
 
+    container.Container.Size = UDim2.new(0, 0, 0, 0)
+    container.Shadow.Size = UDim2.new(0, 0, 0, 0)
+
     Library.container = container
 
     local tabs = game:GetObjects('rbxassetid://17448344475')[1]
@@ -76,12 +79,7 @@ function Library:__init()
         }):Play()
     end
 
-    container.Container.Size = UDim2.new(0, 0, 0, 0)
-    container.Shadow.Size = UDim2.new(0, 0, 0, 0)
-
-    task.delay(3, function()
-        Library.open()
-    end)
+    Library.open()
 
     UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
         if process then
