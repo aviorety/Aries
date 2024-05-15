@@ -3,6 +3,7 @@ local TweenService = game:GetService('TweenService')
 local Section = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Section.lua'))()
 
 local Tab = {}
+Tab.asset = game:GetObjects('rbxassetid://17448395130')[1]
 
 
 function Tab:open()
@@ -53,7 +54,7 @@ end
 
 
 function Tab:create()
-    local tab = game:GetObjects('rbxassetid://17448395130')[1]
+    local tab = Tab.asset:Clone()
     tab.Parent = self.tabs
     tab.TabName.Text = self.name
     tab.IconBackground.Icon.Image = self.icon
