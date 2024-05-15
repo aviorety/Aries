@@ -41,7 +41,7 @@ function Toggle:create()
             return
         end
 
-        if not Library.container.Parent then
+        if not self.Library.container.Parent then
             return
         end
 
