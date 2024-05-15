@@ -40,7 +40,7 @@ function Toggle:create()
             return
         end
 
-        if not Library.exist() then
+        if not Library.container.Parent then
             return
         end
 
