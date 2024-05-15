@@ -45,7 +45,7 @@ function Toggle:create()
             return
         end
 
-        if keycode.KeyCode == self.keycode then
+        if input.KeyCode == self.keycode then
             self.Library.flags[self.flag] = not self.Library.flags[self.flag]
             self.callback(self.Library.flags[self.flag])
             
