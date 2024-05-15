@@ -79,7 +79,9 @@ function Library:__init()
     container.Container.Size = UDim2.new(0, 0, 0, 0)
     container.Shadow.Size = UDim2.new(0, 0, 0, 0)
 
-    Library.open()
+    task.delay(3, function()
+        Library.open()
+    end)
 
     UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
         if process then
