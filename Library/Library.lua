@@ -76,6 +76,11 @@ function Library:__init()
         }):Play()
     end
 
+    container.Container.Size = UDim2.new(0, 0, 0, 0)
+    container.Shadow.Size = UDim2.new(0, 0, 0, 0)
+
+    Library.open()
+
     UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
         if process then
             return
