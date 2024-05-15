@@ -17,6 +17,10 @@ local Section = loadstring(game:HttpGet('https://raw.githubusercontent.com/avior
 local Toggle = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Toggle.lua'))()
 
 local Library = {}
+Library.assets = {
+    left_section = game:GetObjects('rbxassetid://17448581780')[1],
+    right_section = game:GetObjects('rbxassetid://17448583456')[1]
+}
 Library.flags = {}
 Library.container = nil
 Library.container_open = true
@@ -26,7 +30,6 @@ if not isfolder(`Aries`) then
 	makefolder(`Aries`)
 end
 
-
 function Library:clear()
     for _, object in CoreGui:GetChildren() do
         if object.Name ~= 'Aries' then
@@ -35,19 +38,6 @@ function Library:clear()
 
         object:Destroy()
     end
-end
-
-
-function Library:exist()
-	if not Library.container then
-		return
-	end
-
-	if not Library.container.Parent then
-		return
-	end
-
-	return true
 end
 
 
@@ -94,7 +84,7 @@ function Library:__init()
             return
         end
 
-        if not Library.exist() then
+        if not Library.container.Parent then
             return
         end
 
@@ -110,8 +100,8 @@ function Library:__init()
     local TabManager = {}
 
     function TabManager:create_tab()
-        local left_section = game:GetObjects('rbxassetid://17448581780')[1]
-        local right_section = game:GetObjects('rbxassetid://17448583456')[1]
+        local left_section = Library.assets.left_section:Clone()
+        local right_section = Library.assets.right_section:Clone()
 
         local tab = Tab.create({
             container = container.Container,
