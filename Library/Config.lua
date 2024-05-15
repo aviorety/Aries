@@ -4,7 +4,7 @@ local Config = {}
 
 
 function Config:save_flags()
-	if not Library.container.Parent then
+	if not self.container.Parent then
 		return
 	end
 
