@@ -89,7 +89,7 @@ function Library:__init()
             return
         end
 
-        if not Library.container.Parent then
+        if not container.Parent then
             return
         end
 
