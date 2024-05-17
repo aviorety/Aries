@@ -36,28 +36,32 @@ function Toggle:create()
     toggle.Parent = self.section.Modules
     toggle.ToggleName.Text = self.name
 
-    UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
-        if process then
-            return
-        end
+    if self.keybind then
+        toggle.Keybind.Key.Text = key
 
-        if not self.Library.container.Parent then
-            return
-        end
-
-        if input.KeyCode == self.keycode then
-            self.Library.flags[self.flag] = not self.Library.flags[self.flag]
-            self.callback(self.Library.flags[self.flag])
-            
-            Config.save_flags(self.Library)
-    
-            if self.Library.flags[self.flag] then
-                Toggle.enable(toggle)
-            else
-                Toggle.disable(toggle)
+        UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
+            if process then
+                return
             end
-        end
-    end)
+    
+            if not self.Library.container.Parent then
+                return
+            end
+    
+            if input.KeyCode == self.keycode then
+                self.Library.flags[self.flag] = not self.Library.flags[self.flag]
+                self.callback(self.Library.flags[self.flag])
+                
+                Config.save_flags(self.Library)
+        
+                if self.Library.flags[self.flag] then
+                    Toggle.enable(toggle)
+                else
+                    Toggle.disable(toggle)
+                end
+            end
+        end)
+    end
 
     toggle.MouseButton1Click:Connect(function()
         self.Library.flags[self.flag] = not self.Library.flags[self.flag]
