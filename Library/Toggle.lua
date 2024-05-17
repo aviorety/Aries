@@ -36,8 +36,8 @@ function Toggle:create()
     toggle.Parent = self.section.Modules
     toggle.ToggleName.Text = self.name
 
-    if self.keybind then
-        toggle.Keybind.Key.Text = key
+    if self.keycode then
+        toggle.Keybind.Key.Text = self.keycode
 
         UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
             if process then
