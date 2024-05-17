@@ -18,13 +18,18 @@ local Toggle = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviore
 
 local Library = {}
 Library.assets = {
-    left_section = game:GetObjects('rbxassetid://17448581780')[1],
-    right_section = game:GetObjects('rbxassetid://17448583456')[1]
+    left_section = game:GetObjects('rbxassetid://17517702440')[1],
+    right_section = game:GetObjects('rbxassetid://17517705771')[1]
 }
 Library.flags = {}
+Library.keybind = Enum.KeyCode.Insert
+
 Library.container = nil
 Library.container_open = true
-Library.keybind = Enum.KeyCode.Insert
+
+Library.dragging = false
+Library.drag_position = nil
+Library.start_position = nil
 
 if not isfolder(`Aries`) then
 	makefolder(`Aries`)
@@ -48,23 +53,20 @@ Config.load_flags(Library)
 function Library:__init()
     Library.clear()
 
-    local container = game:GetObjects('rbxassetid://17448262149')[1]
+    local container = game:GetObjects('rbxassetid://17517686467')[1]
     container.Container.Size = UDim2.new(0, 0, 0, 0)
     container.Shadow.Size = UDim2.new(0, 0, 0, 0)
     container.Parent = CoreGui
 
     Library.container = container
 
-    local tabs = game:GetObjects('rbxassetid://17448344475')[1]
-    tabs.Parent = container.Container.TabsManager
-
     function Library:open()
         TweenService:Create(container.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-            Size = UDim2.new(0, 875, 0, 533)
+            Size = UDim2.new(0, 775, 0, 472)
         }):Play()
 
         TweenService:Create(container.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-            Size = UDim2.new(0, 1008, 0, 628)
+            Size = UDim2.new(0, 892, 0, 556)
         }):Play()
     end
 
@@ -80,6 +82,56 @@ function Library:__init()
 
     Library.open()
 
+    function Library:drag()
+        if not container.Parent then
+            return
+        end
+    
+        if not Library.drag_position then
+            return
+        end
+        
+        if not Library.start_position then
+            return
+        end
+        
+        local delta = self.input.Position - Library.drag_position
+        local position = UDim2.new(Library.start_position.X.Scale, Library.start_position.X.Offset + delta.X, Library.start_position.Y.Scale, Library.start_position.Y.Offset + delta.Y)
+    
+        TweenService:Create(container.Container, TweenInfo.new(0.2), {
+            Position = position
+        }):Play()
+    
+        TweenService:Create(container.Shadow, TweenInfo.new(0.2), {
+            Position = position
+        }):Play()
+    end
+
+    container.Container.InputBegan:Connect(function(input: InputObject)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            Library.dragging = true
+            Library.drag_position = input.Position
+            Library.start_position = container.Container.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+					Library.dragging = false
+					Library.drag_position = nil
+					Library.start_position = nil
+                end
+            end)
+        end
+    end)
+
+	UserInputService.InputChanged:Connect(function(input: InputObject)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            Library.drag({
+                input = input,
+                container = container
+            })
+        end
+    end)
+
     UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
         if process then
             return
@@ -89,6 +141,20 @@ function Library:__init()
             return
         end
 
+        if not container.Parent then
+            return
+        end
+
+        Library.container_open = not Library.container_open
+
+        if Library.container_open then
+            Library.open()
+        else
+            Library.close()
+        end
+    end)
+
+    container.Mobile.MouseButton1Click:Connect(function()
         if not container.Parent then
             return
         end
@@ -133,7 +199,7 @@ function Library:__init()
 
         function SectionManager:create_section()
             local side = self.side == 'right' and right_section or left_section
-            local section_size = 46
+            local section_size = 42
 
             local section = Section.create({
                 side = side,
@@ -143,10 +209,10 @@ function Library:__init()
             local ModuleManager = {}
 
             function ModuleManager:create_toggle()
-                section_size += 31
+                section_size += 26
                 
-                section.Size = UDim2.new(0, 284, 0, section_size)
-                section.Modules.Size = UDim2.new(0, 284, 0, section_size - 33)
+                section.Size = UDim2.new(0, 251, 0, section_size)
+                section.Modules.Size = UDim2.new(0, 251, 0, section_size - 29)
 
                 local toggle = Toggle.create({
                     section = section,
@@ -176,7 +242,6 @@ function Library:__init()
 
     return TabManager
 end
-
 
 --[[
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Library.lua'))()
