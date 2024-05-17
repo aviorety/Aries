@@ -1,7 +1,7 @@
 local TweenService = game:GetService('TweenService')
 
 local Section = {}
-Section.asset = game:GetObjects('rbxassetid://17517792624')[1]
+Section.asset = game:GetObjects('rbxassetid://17517814042')[1]
 
 
 function Section:update()
