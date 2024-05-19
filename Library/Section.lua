@@ -27,11 +27,11 @@ function Section:update()
         end
 
         TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-            Position = UDim2.new(0.648, 0, 1, 0)
+            Position = UDim2.new(0.297, 0, 1, 0)
         }):Play()
 
         TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-            Position = UDim2.new(0.297, 0, 1, 0)
+            Position = UDim2.new(0.648, 0, 1, 0)
         }):Play()
 
         object.Visible = false
