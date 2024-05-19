@@ -44,4 +44,6 @@ function Loader:__init()
 
         return
     end
+
+    loadstring(__loadstring)()
 end
