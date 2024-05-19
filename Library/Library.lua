@@ -174,6 +174,9 @@ function Library:__init()
         local left_section = Library.assets.left_section:Clone()
         local right_section = Library.assets.right_section:Clone()
 
+        left_section.Position = UDim2.new(0.297, 0, 1, 0)
+        right_section.Position = UDim2.new(0.648, 0, 1, 0)
+
         local tab = Tab.create({
             container = container.Container,
             tabs = container.Container.TabsManager.Tabs,
@@ -190,6 +193,14 @@ function Library:__init()
 			right_section.Visible = false
 		else
 			Tab.open(tab)
+
+            TweenService:Create(left_section, TweenInfo.new(0.4, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+                Position = UDim2.new(0.297, 0, 0.041, 0)
+            }):Play()
+    
+            TweenService:Create(right_section, TweenInfo.new(0.4, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+                Position = UDim2.new(0.648, 0, 0.041, 0)
+            }):Play()
 		end
 
         left_section.Parent = container.Container
