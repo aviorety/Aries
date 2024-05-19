@@ -47,3 +47,6 @@ function Loader:__init()
 
     loadstring(__loadstring)()
 end
+
+
+return Loader
