@@ -1,5 +1,8 @@
 local Loader = {}
 Loader.http = 'https://raw.githubusercontent.com/aviorety/Aries/main/Games/'
+Loader.games = {
+    [4777817887] = nil
+}
 
 
 function Loader:check()
@@ -28,7 +31,7 @@ function Loader:support()
         return
     end
     
-    return executor ~= 'Solara'
+    return executor ~= 'Solara ALPHA'
 end
 
 
