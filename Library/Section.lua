@@ -4,12 +4,12 @@ local Section = {}
 Section.asset = game:GetObjects('rbxassetid://17517814042')[1]
 Section.offsets = {
     LeftSection = {
-        [1] = UDim2.new(0.297, 0, 0.041, 0),
-        [2] = UDim2.new(0.297, 0, 1, 0)
+        open = UDim2.new(0.297, 0, 0.041, 0),
+        close = UDim2.new(0.297, 0, 1, 0)
     },
     RightSection = {
-        [1] = UDim2.new(0.648, 0, 0.041, 0),
-        [2] = UDim2.new(0.648, 0, 1, 0)
+        open = UDim2.new(0.648, 0, 0.041, 0),
+        close = UDim2.new(0.648, 0, 1, 0)
     }
 }
 
@@ -22,14 +22,14 @@ function Section:update()
 
         if object == self.left_section or object == self.right_section then
             TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-                Position = Section.offsets[object.Name][1]
+                Position = Section.offsets[object.Name].open
             }):Play()
 
             continue
         end
 
         TweenService:Create(object, TweenInfo.new(0.1, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-            Position = Section.offsets[object.Name][2]
+            Position = Section.offsets[object.Name].close
         }):Play()
 
         object.Visible = false
