@@ -234,6 +234,33 @@ function Library:__init()
                 self.callback(Library.flags[self.flag])
             end
 
+            function ModuleManager:create_slider()
+                section_size += 41
+                
+                section.Size = UDim2.new(0, 251, 0, section_size)
+                section.Modules.Size = UDim2.new(0, 251, 0, section_size - 29)
+
+                if not Library.flags[self.flag] then
+                    Library.flags[self.flag] = self.value
+                end
+
+                local slider = Slider.create({
+                    section = section,
+                    Library = Library,
+
+                    name = self.name,
+                    flag = self.flag,
+
+                    value = Library.flags[self.flag],
+                    maximum_value = self.maximum_value,
+                    minimum_value = self.minimum_value,
+
+                    callback = self.callback
+                })
+
+                self.callback(Library.flags[self.flag])
+            end
+
             return ModuleManager
         end
 
@@ -242,6 +269,7 @@ function Library:__init()
 
     return TabManager
 end
+
 
 --[[
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Library.lua'))()
@@ -267,6 +295,19 @@ auto_parry_section.create_toggle({
     end
 })
 
+auto_parry_section.create_slider({
+    name = 'Accuracy',
+    flag = 'auto_parry_accuracy',
+
+    value = 80,
+    maximum_value = 100,
+    minimum_value = 1,
+
+    callback = function(result: number)
+        warn(result)
+    end
+})
+
 local world = main.create_tab({
     name = 'World',
     icon = 'rbxassetid://17447918843'
@@ -282,6 +323,5 @@ local settings = main.create_tab({
     icon = 'rbxassetid://17447924593'
 })
 ]]
-
 
 return Library
