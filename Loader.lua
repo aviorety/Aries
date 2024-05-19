@@ -7,11 +7,11 @@ Loader.games = {
 
 function Loader:check()
     local success, result = pcall(function()
-        return game:HttpGet(Loader.http..self)
+        return game:HttpGet(`{Loader.http}{self}.lua`)
     end)
 
-    if not success then
-        warn(`couldn't access to the {Loader.http}`)
+    if result:find('404') then
+        warn(`couldn't access to the {Loader.http}{self}.lua`)
 
         return
     end
@@ -43,8 +43,6 @@ function Loader:__init()
     local __loadstring = Loader.check(game.GameId)
 
     if not __loadstring then
-        warn(`{game.GameId} is not supported`)
-
         return
     end
 
