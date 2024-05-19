@@ -27,11 +27,11 @@ function Section:update()
         end
 
         if object.Name == 'LeftSection' then
-            TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+            TweenService:Create(object, TweenInfo.new(0.1, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
                 Position = UDim2.new(0.297, 0, 1, 0)
             }):Play()
         else
-            TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
+            TweenService:Create(object, TweenInfo.new(0.1, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
                 Position = UDim2.new(0.648, 0, 1, 0)
             }):Play()
         end
