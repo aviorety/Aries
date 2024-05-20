@@ -34,7 +34,7 @@ function Loader:__init()
 
     if Loader.support() then
         warn(`{identifyexecutor()}: {http}`)
-        loadstring(game:HttpGet(http))
+        loadstring(game:HttpGet(http))()
     else
         warn(`Solara: {script_id}`)
         lrm_load_script(script_id)
