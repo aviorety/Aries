@@ -66,7 +66,7 @@ function Slider:create()
         end
 
         Slider.loop({
-            Library = self.Library
+            Library = self.Library,
             slider = slider,
 
             mouse = true,
