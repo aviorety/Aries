@@ -31,6 +31,8 @@ Library.dragging = false
 Library.drag_position = nil
 Library.start_position = nil
 
+Library.slider_drag = false
+
 if not isfolder(`Aries`) then
 	makefolder(`Aries`)
 end
