@@ -37,7 +37,7 @@ function Toggle:create()
     toggle.ToggleName.Text = self.name
 
     if self.keycode then
-        toggle.Keybind.Key.Text = self.keycode
+        toggle.Keybind.Key.Text = UserInputService:GetStringForKeyCode(self.keycode)
 
         UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
             if process then
