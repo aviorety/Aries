@@ -6,7 +6,7 @@ local mouse = LocalPlayer:GetMouse()
 
 local Slider = {}
 Slider.asset = game:GetObjects('rbxassetid://17559874621')[1]
-warn('update')
+warn('update2222')
 
 
 function Slider:update()
@@ -32,7 +32,7 @@ function Slider:update()
         NumberSequenceKeypoint.new(1, 1)
     })
 
-    TweenService:Create(self.slider_value, TweenInfo.new(0.5), {
+    TweenService:Create(self.slider_value, TweenInfo.new(0.2), {
         Value = number
     }):Play()
 
