@@ -5,7 +5,8 @@ local TweenService = game:GetService('TweenService')
 local mouse = LocalPlayer:GetMouse()
 
 local Slider = {}
-Slider.asset = game:GetObjects('rbxassetid://17551503468')[1]
+Slider.asset = game:GetObjects('rbxassetid://17559874621')[1]
+warn(Slider.asset)
 
 
 function Slider:update()
