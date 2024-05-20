@@ -14,7 +14,7 @@ function Slider:update()
     if self.mouse then
         result = math.clamp((mouse.X - self.slider.Box.AbsolutePosition.X) / self.slider.Box.AbsoluteSize.X, 0, 1)
     else
-        result = nil
+        --result = math.clamp((self.value - ) / self.slider.Box.AbsolutePosition.X / self.slider.Box.AbsoluteSize.X, 0, 1)
     end
 
     if not result then
