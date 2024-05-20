@@ -6,7 +6,7 @@ local mouse = LocalPlayer:GetMouse()
 
 local Slider = {}
 Slider.asset = game:GetObjects('rbxassetid://17559874621')[1]
-warn(Slider.asset)
+warn('update')
 
 
 function Slider:update()
@@ -28,7 +28,7 @@ function Slider:update()
     self.slider.Box.Fill.UIGradient.Transparency = NumberSequence.new({
         NumberSequenceKeypoint.new(0, 0),
         NumberSequenceKeypoint.new(slider_size, 0),
-        NumberSequenceKeypoint.new(math.min(slider_size + 0.1, 1), 1),
+        NumberSequenceKeypoint.new(math.min(slider_size + 0.01, 1), 1),
         NumberSequenceKeypoint.new(1, 1)
     })
 
@@ -81,7 +81,7 @@ function Slider:create()
     end)
 
     slider_value:GetPropertyChangedSignal('Value'):Connect(function()
-        slider.SliderValue.Text = slider_value.Value
+        slider.SliderValue.Text = math.floor(slider_value.Value)
     end)
     
     UserInputService.InputEnded:Connect(function(input: InputObject, process: boolean)
