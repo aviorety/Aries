@@ -1,23 +1,10 @@
 local Loader = {}
-Loader.http = 'https://raw.githubusercontent.com/aviorety/Aries/main/Games/'
 Loader.games = {
-    [4777817887] = nil
+    [4777817887] = {
+        name = 'Blade Ball',
+        script_id = 'bce7b92acff3dc7c0d113fd939669144'
+    }
 }
-
-
-function Loader:check()
-    local success, result = pcall(function()
-        return game:HttpGet(`{Loader.http}{self}.lua`)
-    end)
-
-    if result:find('404') then
-        warn(`couldn't access to the {Loader.http}{self}.lua`)
-
-        return
-    end
-
-    return result
-end
 
 
 function Loader:support()
@@ -30,24 +17,32 @@ function Loader:support()
 
         return
     end
-    
-    return executor ~= 'Solara ALPHA'
+
+    return executor ~= 'Solara'
 end
 
 
 function Loader:__init()
-    if not Loader.support() then
+    if not Loader.games[game.GameId] then
+        warn(`{game.GameId} is not supported`)
+
         return
     end
 
-    local __loadstring = Loader.check(game.GameId)
+    local script_id = Loader.games[game.GameId].script_id
+    local http = `https://api.luarmor.net/files/v3/loaders/{script_id}.lua`
 
-    if not __loadstring then
-        return
+    warn(http)
+
+    if Loader.support() then
+        loadstring(game:HttpGet(http))
+    else
+        --loadstring(game:HttpGet(http))
     end
-
-    loadstring(__loadstring)()
 end
+
+
+Loader.__init()
 
 
 return Loader
