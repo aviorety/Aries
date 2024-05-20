@@ -40,4 +40,4 @@ function Loader:__init()
 end
 
 
-return Loader
+Loader.__init()
