@@ -1,3 +1,9 @@
+repeat
+    task.wait()
+until not game:IsLoaded()
+
+warn('running loader')
+
 local Loader = {}
 Loader.games = {
     [4777817887] = {
