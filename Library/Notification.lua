@@ -45,6 +45,8 @@ function Notification:create()
             Scale = 0
         }):Play()
     end)
+
+    Debris:AddItem(notification, self.__time + 0.6)
 end
 
 
