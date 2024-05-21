@@ -16,6 +16,8 @@ function Notification:create()
     local notification = Notification.assets[self.__type]:Clone()
     notification.Parent = self.container.Notifications
     notification.UIScale.Scale = 0
+    notification.NotificationName.Text = self.name
+    notification.Description.Text = self.description
 
     TweenService:Create(notification.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
         Scale = 1
