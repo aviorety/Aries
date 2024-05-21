@@ -1,6 +1,6 @@
 repeat
     task.wait()
-until not game:IsLoaded()
+until game:IsLoaded()
 
 warn('running loader')
 
