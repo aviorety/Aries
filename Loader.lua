@@ -8,7 +8,7 @@ local Loader = {}
 Loader.games = {
     [4777817887] = {
         name = 'Blade Ball',
-        script_id = 'bce7b92acff3dc7c0d113fd939669144'
+        script_id = 'f8555be8e5bebb5c92efc25ad31686c7'
     }
 }
 
