@@ -15,6 +15,7 @@ local Tab = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/
 local Section = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Section.lua'))()
 local Toggle = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Toggle.lua'))()
 local Slider = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Slider.lua'))()
+local Notification = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Notification.lua'))()
 
 local Library = {}
 Library.assets = {
@@ -82,8 +83,6 @@ function Library:__init()
         }):Play()
     end
 
-    Library.open()
-
     function Library:drag()
         if not container.Parent then
             return
@@ -108,6 +107,20 @@ function Library:__init()
             Position = position
         }):Play()
     end
+
+    function Library:create_notification()
+        Notification.create({
+            container = container,
+
+            name = self.name,
+            description = self.description,
+
+            __time = self.__time,
+            __type = self.__type
+        })
+    end
+
+    Library.open()
 
     container.Container.InputBegan:Connect(function(input: InputObject)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
