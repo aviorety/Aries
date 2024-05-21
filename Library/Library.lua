@@ -34,14 +34,14 @@ Library.start_position = nil
 
 Library.slider_drag = false
 
-if not isfolder(`Aries`) then
-	makefolder(`Aries`)
+if not isfolder(`Atonium`) then
+	makefolder(`Atonium`)
 end
 
 
 function Library:clear()
     for _, object in CoreGui:GetChildren() do
-        if object.Name ~= 'Aries' then
+        if object.Name ~= 'Atonium' then
             continue
         end
 
