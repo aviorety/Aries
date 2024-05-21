@@ -9,18 +9,18 @@ function Config:save_flags()
 	end
 
 	local flags = HttpService:JSONEncode(self.flags)
-	writefile(`Aries/{game.GameId}.lua`, flags)
+	writefile(`Atonium/{game.GameId}.lua`, flags)
 end
 
 
 function Config:load_flags()
-	if not isfile(`Aries/{game.GameId}.lua`) then
+	if not isfile(`Atonium/{game.GameId}.lua`) then
 		Config.save_flags(self)
 
 		return
 	end
 
-	local flags = readfile(`Aries/{game.GameId}.lua`)
+	local flags = readfile(`Atonium/{game.GameId}.lua`)
 
 	if not flags then
 		Config.save_flags(self)
