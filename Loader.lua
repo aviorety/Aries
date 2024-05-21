@@ -32,13 +32,16 @@ function Loader:__init()
     local script_id = Loader.games[game.GameId].script_id
     local http = `https://api.luarmor.net/files/v3/loaders/{script_id}.lua`
 
-    if Loader.support() then
+    warn(`{identifyexecutor()}: {http}`)
+    loadstring(game:HttpGet(http))()
+
+    --[[if Loader.support() then
         warn(`{identifyexecutor()}: {http}`)
         loadstring(game:HttpGet(http))()
     else
         warn(`Solara: {script_id}`)
         lrm_load_script(script_id)
-    end
+    end]]
 end
 
 
