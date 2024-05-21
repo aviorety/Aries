@@ -258,9 +258,10 @@ function Library:__init()
                 end
 
                 local slider = Slider.create({
-                    section = section,
                     Library = Library,
+                    Config = Config,
 
+                    section = section,
                     name = self.name,
                     flag = self.flag,
 
