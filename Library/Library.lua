@@ -56,7 +56,7 @@ Config.load_flags(Library)
 function Library:__init()
     Library.clear()
 
-    local container = game:GetObjects('rbxassetid://17567403614')[1]
+    local container = game:GetObjects('rbxassetid://17570216048')[1]
     container.Container.Size = UDim2.new(0, 0, 0, 0)
     container.Shadow.Size = UDim2.new(0, 0, 0, 0)
     container.Parent = CoreGui
@@ -302,6 +302,14 @@ end
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Library.lua'))()
 local main = Library.__init()
 
+main.create_notification({
+    name = 'Atonium Loaded',
+    description = 'Atonium has been loaded successfully',
+
+    __time = 3,
+    __type = 'neutral'
+})
+
 local blatant = main.create_tab({
     name = 'Blatant',
     icon = 'rbxassetid://17447902260'
@@ -350,5 +358,6 @@ local settings = main.create_tab({
     icon = 'rbxassetid://17447924593'
 })
 ]]
+
 
 return Library
