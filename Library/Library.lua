@@ -55,7 +55,7 @@ Config.load_flags(Library)
 function Library:__init()
     Library.clear()
 
-    local container = game:GetObjects('rbxassetid://17517686467')[1]
+    local container = game:GetObjects('rbxassetid://17567403614')[1]
     container.Container.Size = UDim2.new(0, 0, 0, 0)
     container.Shadow.Size = UDim2.new(0, 0, 0, 0)
     container.Parent = CoreGui
