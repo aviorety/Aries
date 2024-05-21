@@ -44,9 +44,9 @@ function Notification:create()
         TweenService:Create(notification.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
             Scale = 0
         }):Play()
-    end)
 
-    Debris:AddItem(notification, self.__time + 0.6)
+        Debris:AddItem(notification, 0.6)
+    end)
 end
 
 
