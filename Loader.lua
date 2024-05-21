@@ -2,7 +2,15 @@ repeat
     task.wait()
 until game:IsLoaded()
 
-warn('running loader')
+if isfile(`Atonium/key.lua`) then
+    script_key = readfile(`Atonium/key.lua`)
+else
+    if script_key then
+        writefile(`Atonium/key.lua`, flags)
+    end
+end
+
+warn(`running loader: {script_key}`)
 
 local Loader = {}
 Loader.games = {
@@ -37,10 +45,6 @@ function Loader:__init()
 
     local script_id = Loader.games[game.GameId].script_id
     local http = `https://api.luarmor.net/files/v3/loaders/{script_id}.lua`
-
-    if getgenv().script_key then
-        script_key = getgenv().script_key
-    end
 
     warn(`{identifyexecutor()}: {http}`)
     loadstring(game:HttpGet(http))()
