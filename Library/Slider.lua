@@ -6,7 +6,6 @@ local mouse = LocalPlayer:GetMouse()
 
 local Slider = {}
 Slider.asset = game:GetObjects('rbxassetid://17559874621')[1]
-warn('update2222')
 
 
 function Slider:update()
