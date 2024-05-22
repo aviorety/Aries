@@ -3,10 +3,10 @@ repeat
 until game:IsLoaded()
 
 if isfile(`Atonium/key.lua`) then
-    --script_key = readfile(`Atonium/key.lua`)
-else
     if script_key then
         writefile(`Atonium/key.lua`, script_key)
+    else
+        script_key = readfile(`Atonium/key.lua`)
     end
 end
 
