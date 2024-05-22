@@ -327,6 +327,14 @@ auto_parry_section.create_toggle({
 
     callback = function(result: boolean)
         warn(result)
+
+        Library.create_notification({
+            name = 'AutoParry',
+            description = 'Enabled',
+
+            __time = 1.5,
+            __type = 'neutral'
+        })
     end
 })
 
