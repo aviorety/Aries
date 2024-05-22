@@ -3,7 +3,7 @@ repeat
 until game:IsLoaded()
 
 if isfile(`Atonium/key.lua`) then
-    script_key = readfile(`Atonium/key.lua`)
+    --script_key = readfile(`Atonium/key.lua`)
 else
     if script_key then
         writefile(`Atonium/key.lua`, script_key)
@@ -19,21 +19,6 @@ Loader.games = {
         script_id = 'f8555be8e5bebb5c92efc25ad31686c7'
     }
 }
-
-
-function Loader:support()
-    local success, executor = pcall(function()
-        return identifyexecutor()
-    end)
-
-    if not success or not executor then
-        warn(`couldn't identify the executor`)
-
-        return
-    end
-
-    return executor ~= 'Solara'
-end
 
 
 function Loader:__init()
