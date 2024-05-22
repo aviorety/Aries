@@ -326,8 +326,6 @@ auto_parry_section.create_toggle({
     keycode = Enum.KeyCode.R,
 
     callback = function(result: boolean)
-        warn(result)
-
         Library.create_notification({
             name = 'AutoParry',
             description = 'Enabled',
@@ -347,7 +345,7 @@ auto_parry_section.create_slider({
     minimum_value = 1,
 
     callback = function(result: number)
-        warn(result)
+        
     end
 })
 
