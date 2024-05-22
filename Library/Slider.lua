@@ -86,7 +86,7 @@ function Slider:create()
     UserInputService.InputEnded:Connect(function(input: InputObject, process: boolean)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             self.Library.slider_drag = false
-            self.Config.save_flags()
+            self.Config.save_flags(self.Library)
         end
     end)
 
