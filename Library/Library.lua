@@ -19,8 +19,8 @@ local Notification = loadstring(game:HttpGet('https://raw.githubusercontent.com/
 
 local Library = {}
 Library.assets = {
-    left_section = game:GetObjects('rbxassetid://17517702440')[1],
-    right_section = game:GetObjects('rbxassetid://17517705771')[1]
+    left_section = game:GetObjects('rbxassetid://17577814687')[1],
+    right_section = game:GetObjects('rbxassetid://17577820790')[1]
 }
 Library.flags = {}
 Library.keybind = Enum.KeyCode.Insert
