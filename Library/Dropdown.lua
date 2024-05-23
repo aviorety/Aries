@@ -19,7 +19,7 @@ end
 
 
 function Dropdown:close()
-    TweenService:Create(self.dropdown, TweenInfo.new(0.4), {
+    TweenService:Create(self, TweenInfo.new(0.4), {
         Size = UDim2.new(0, 215, 0, 18)
     }):Play()
 
