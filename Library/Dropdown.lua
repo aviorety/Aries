@@ -48,7 +48,7 @@ function Dropdown:create()
     local open = false
 
     local dropdown = Dropdown.assets.dropdown:Clone()
-    dropdown.Parent = self.section
+    dropdown.Parent = self.section.Modules
     dropdown.Box.Option.Text = self.option
     dropdown.DropdownName.Text = self.name
 
