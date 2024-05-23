@@ -9,11 +9,11 @@ Dropdown.assets = {
 
 function Dropdown:open()
     TweenService:Create(self.dropdown, TweenInfo.new(0.4), {
-        Size = UDim2.new(0, 215, 0, 18 + self.list_size)
+        Size = UDim2.new(0, 215, 0, 18 + self.section_data.size)
     }):Play()
 
     TweenService:Create(self.dropdown.Box.Options, TweenInfo.new(0.4), {
-        Size = UDim2.new(0, 113, 0, self.list_size)
+        Size = UDim2.new(0, 113, 0, self.section_data.size)
     }):Play()
 end
 
@@ -94,13 +94,13 @@ function Dropdown:create()
 
         if open then
             Dropdown.open({
-                --section_data = self.section_data,
+                section_data = self.section_data,
                 section = self.section,
                 dropdown = dropdown,
             })
         else
             Dropdown.close({
-                --section_data = self.section_data,
+                section_data = self.section_data,
                 section = self.section,
                 dropdown = dropdown,
             })
