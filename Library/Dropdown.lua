@@ -3,8 +3,10 @@ local TweenService = game:GetService('TweenService')
 local Dropdown = {}
 Dropdown.assets = {
     dropdown = game:GetObjects('rbxassetid://17588969574')[1],
-    option = game:GetObjects('rbxassetid://17590367670')[1]
+    option = game:GetObjects('rbxassetid://17590395824')[1]
 }
+
+warn('shit')
 
 function Dropdown:open()
     TweenService:Create(self.dropdown, TweenInfo.new(0.4), {
