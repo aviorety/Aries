@@ -41,6 +41,7 @@ function Section:create()
     local section = Section.asset:Clone()
     section.Parent = self.side
     section.TopBackground.SectionName.Text = self.name
+    section.ClipsDescendants = false
 
     return section
 end
