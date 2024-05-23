@@ -376,6 +376,18 @@ auto_parry_section.create_slider({
     end
 })
 
+auto_parry_section.create_dropdown({
+    name = 'Direction',
+    flag = 'direction',
+
+    option = 'Classic',
+    options = {'Classic', 'Straight', 'Random', 'High'}
+
+    callback = function(result: string)
+        warn(result)
+    end
+})
+
 local world = main.create_tab({
     name = 'World',
     icon = 'rbxassetid://17447918843'
