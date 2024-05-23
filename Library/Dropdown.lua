@@ -2,8 +2,8 @@ local TweenService = game:GetService('TweenService')
 
 local Dropdown = {}
 Dropdown.assets = {
-    dropdown = game:GetObjects('rbxassetid://17588969574'),
-    option = game:GetObjects('rbxassetid://17589098486')
+    dropdown = game:GetObjects('rbxassetid://17588969574')[1],
+    option = game:GetObjects('rbxassetid://17589098486')[1]
 }
 
 
