@@ -12,6 +12,10 @@ function Dropdown:open()
         Size = UDim2.new(0, 215, 0, 18 + self.list_size)
     }):Play()
 
+    TweenService:Create(self.dropdown.Box.Arrow, TweenInfo.new(0.4), {
+        Rotation = 180
+    }):Play()
+
     TweenService:Create(self.dropdown.Box.Options, TweenInfo.new(0.4), {
         Size = UDim2.new(0, 113, 0, self.list_size)
     }):Play()
@@ -21,6 +25,10 @@ end
 function Dropdown:close()
     TweenService:Create(self, TweenInfo.new(0.4), {
         Size = UDim2.new(0, 215, 0, 18)
+    }):Play()
+
+    TweenService:Create(self.Box.Arrow, TweenInfo.new(0.4), {
+        Rotation = 0
     }):Play()
 
     TweenService:Create(self.Box.Options, TweenInfo.new(0.4), {
