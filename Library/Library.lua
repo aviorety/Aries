@@ -225,7 +225,9 @@ function Library:__init()
 
         function SectionManager:create_section()
             local side = self.side == 'right' and right_section or left_section
-            local section_size = 42
+            local section_data = {
+                size = 42
+            }
 
             local section = Section.create({
                 side = side,
@@ -235,10 +237,10 @@ function Library:__init()
             local ModuleManager = {}
 
             function ModuleManager:create_toggle()
-                section_size += 26
+                section_data.size += 26
                 
-                section.Size = UDim2.new(0, 251, 0, section_size)
-                section.Modules.Size = UDim2.new(0, 251, 0, section_size - 29)
+                section.Size = UDim2.new(0, 251, 0, section_data.size)
+                section.Modules.Size = UDim2.new(0, 251, 0, section_data.size - 29)
 
                 local toggle = Toggle.create({
                     section = section,
@@ -261,10 +263,10 @@ function Library:__init()
             end
 
             function ModuleManager:create_slider()
-                section_size += 41
+                section_data.size += 41
                 
-                section.Size = UDim2.new(0, 251, 0, section_size)
-                section.Modules.Size = UDim2.new(0, 251, 0, section_size - 29)
+                section.Size = UDim2.new(0, 251, 0, section_data.size)
+                section.Modules.Size = UDim2.new(0, 251, 0, section_data.size - 29)
 
                 if not Library.flags[self.flag] then
                     Library.flags[self.flag] = self.value
@@ -289,10 +291,10 @@ function Library:__init()
             end
 
             function ModuleManager:create_dropdown()
-                section_size += 26
+                section_data.size += 26
                 
-                section.Size = UDim2.new(0, 251, 0, section_size)
-                section.Modules.Size = UDim2.new(0, 251, 0, section_size - 29)
+                section.Size = UDim2.new(0, 251, 0, section_data.size)
+                section.Modules.Size = UDim2.new(0, 251, 0, section_data.size - 29)
 
                 if not Library.flags[self.flag] then
                     Library.flags[self.flag] = self.option
@@ -303,6 +305,8 @@ function Library:__init()
                     Config = Config,
 
                     section = section,
+                    section_data = section_data,
+
                     name = self.name,
                     flag = self.flag,
 
