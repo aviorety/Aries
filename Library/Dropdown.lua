@@ -6,8 +6,6 @@ Dropdown.assets = {
     option = game:GetObjects('rbxassetid://17590367670')[1]
 }
 
-warn('1')
-
 function Dropdown:open()
     TweenService:Create(self.dropdown, TweenInfo.new(0.4), {
         Size = UDim2.new(0, 215, 0, 18 + self.list_size)
