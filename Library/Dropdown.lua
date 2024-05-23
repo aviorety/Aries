@@ -96,13 +96,13 @@ function Dropdown:create()
             Dropdown.open({
                 section_data = self.section_data,
                 section = self.section,
-                dropdown = dropdown,
+                dropdown = dropdown
             })
         else
             Dropdown.close({
                 section_data = self.section_data,
                 section = self.section,
-                dropdown = dropdown,
+                dropdown = dropdown
             })
         end
     end)
