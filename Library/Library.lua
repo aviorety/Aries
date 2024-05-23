@@ -225,9 +225,7 @@ function Library:__init()
 
         function SectionManager:create_section()
             local side = self.side == 'right' and right_section or left_section
-            local section_data = {
-                size = 42
-            }
+            local section_size = 42
 
             local section = Section.create({
                 side = side,
@@ -237,10 +235,10 @@ function Library:__init()
             local ModuleManager = {}
 
             function ModuleManager:create_toggle()
-                section_data.size += 26
+                section_size += 26
                 
-                section.Size = UDim2.new(0, 251, 0, section_data.size)
-                section.Modules.Size = UDim2.new(0, 251, 0, section_data.size - 29)
+                section.Size = UDim2.new(0, 251, 0, section_size)
+                section.Modules.Size = UDim2.new(0, 251, 0, section_size - 29)
 
                 local toggle = Toggle.create({
                     section = section,
@@ -263,10 +261,10 @@ function Library:__init()
             end
 
             function ModuleManager:create_slider()
-                section_data.size += 41
+                section_size += 41
                 
-                section.Size = UDim2.new(0, 251, 0, section_data.size)
-                section.Modules.Size = UDim2.new(0, 251, 0, section_data.size - 29)
+                section.Size = UDim2.new(0, 251, 0, section_size)
+                section.Modules.Size = UDim2.new(0, 251, 0, section_size - 29)
 
                 if not Library.flags[self.flag] then
                     Library.flags[self.flag] = self.value
@@ -291,10 +289,10 @@ function Library:__init()
             end
 
             function ModuleManager:create_dropdown()
-                section_data.size += 26
+                section_size += 26
                 
-                section.Size = UDim2.new(0, 251, 0, section_data.size)
-                section.Modules.Size = UDim2.new(0, 251, 0, section_data.size - 29)
+                section.Size = UDim2.new(0, 251, 0, section_size)
+                section.Modules.Size = UDim2.new(0, 251, 0, section_size - 29)
 
                 if not Library.flags[self.flag] then
                     Library.flags[self.flag] = self.option
@@ -305,8 +303,6 @@ function Library:__init()
                     Config = Config,
 
                     section = section,
-                    section_data = section_data,
-
                     name = self.name,
                     flag = self.flag,
 
@@ -407,6 +403,82 @@ local settings = main.create_tab({
     icon = 'rbxassetid://17447924593'
 })
 ]]
+
+local main = Library.__init()
+
+Library.create_notification({
+    name = 'Atonium Loaded',
+    description = 'Atonium has been loaded successfully',
+
+    __time = 3,
+    __type = 'neutral'
+})
+
+local blatant = main.create_tab({
+    name = 'Blatant',
+    icon = 'rbxassetid://17447902260'
+})
+
+local auto_parry_section = blatant.create_section({
+    side = 'left',
+    name = 'AutoParry'
+})
+
+auto_parry_section.create_toggle({
+    name = 'Enabled',
+    flag = 'auto_parry',
+    keycode = Enum.KeyCode.R,
+
+    callback = function(result: boolean)
+        Library.create_notification({
+            name = 'AutoParry',
+            description = 'Enabled',
+
+            __time = 1.5,
+            __type = 'neutral'
+        })
+    end
+})
+
+auto_parry_section.create_slider({
+    name = 'Accuracy',
+    flag = 'auto_parry_accuracy',
+
+    value = 80,
+    maximum_value = 100,
+    minimum_value = 1,
+
+    callback = function(result: number)
+        
+    end
+})
+
+auto_parry_section.create_dropdown({
+    name = 'Direction',
+    flag = 'direction',
+
+    option = 'Classic',
+    options = {'Classic', 'Straight', 'Random', 'High'},
+
+    callback = function(result: string)
+        warn(result)
+    end
+})
+
+local world = main.create_tab({
+    name = 'World',
+    icon = 'rbxassetid://17447918843'
+})
+
+local misc = main.create_tab({
+    name = 'Misc',
+    icon = 'rbxassetid://17447926845'
+})
+
+local settings = main.create_tab({
+    name = 'Settings',
+    icon = 'rbxassetid://17447924593'
+})
 
 
 return Library
