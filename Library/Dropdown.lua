@@ -29,6 +29,7 @@ function Dropdown:create()
     local dropdown = Dropdown.assets.dropdown:Clone()
     dropdown.Parent = self.section
     dropdown.Box.Option.Text = self.option
+    dropdown.DropdownName.Text = self.name
 
     for _, value in self.options do
         options += 1
