@@ -3,8 +3,6 @@ local TweenService = game:GetService('TweenService')
 local CoreGui = game:GetService('CoreGui')
 
 --[[
-local Animation = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Animation.lua'))()
-
 local Colorpicker = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Colorpicker.lua'))()
 ]]
 
@@ -403,82 +401,6 @@ local settings = main.create_tab({
     icon = 'rbxassetid://17447924593'
 })
 ]]
-
-local main = Library.__init()
-
-Library.create_notification({
-    name = 'Atonium Loaded',
-    description = 'Atonium has been loaded successfully',
-
-    __time = 3,
-    __type = 'neutral'
-})
-
-local blatant = main.create_tab({
-    name = 'Blatant',
-    icon = 'rbxassetid://17447902260'
-})
-
-local auto_parry_section = blatant.create_section({
-    side = 'left',
-    name = 'AutoParry'
-})
-
-auto_parry_section.create_toggle({
-    name = 'Enabled',
-    flag = 'auto_parry',
-    keycode = Enum.KeyCode.R,
-
-    callback = function(result: boolean)
-        Library.create_notification({
-            name = 'AutoParry',
-            description = 'Enabled',
-
-            __time = 1.5,
-            __type = 'neutral'
-        })
-    end
-})
-
-auto_parry_section.create_slider({
-    name = 'Accuracy',
-    flag = 'auto_parry_accuracy',
-
-    value = 80,
-    maximum_value = 100,
-    minimum_value = 1,
-
-    callback = function(result: number)
-        
-    end
-})
-
-auto_parry_section.create_dropdown({
-    name = 'Direction',
-    flag = 'direction',
-
-    option = 'Classic',
-    options = {'Classic', 'Straight', 'Random', 'High'},
-
-    callback = function(result: string)
-        warn(result)
-    end
-})
-
-local world = main.create_tab({
-    name = 'World',
-    icon = 'rbxassetid://17447918843'
-})
-
-local misc = main.create_tab({
-    name = 'Misc',
-    icon = 'rbxassetid://17447926845'
-})
-
-local settings = main.create_tab({
-    name = 'Settings',
-    icon = 'rbxassetid://17447924593'
-})
 
 
 return Library
