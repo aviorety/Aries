@@ -8,6 +8,10 @@ Dropdown.assets = {
 
 
 function Dropdown:open()
+    TweenService:Create(self.dropdown, TweenInfo.new(0.4), {
+        Size = UDim2.new(0, 215, 0, 18 + self.list_size)
+    }):Play()
+
     TweenService:Create(self.dropdown.Box.Options, TweenInfo.new(0.4), {
         Size = UDim2.new(0, 113, 0, self.list_size)
     }):Play()
@@ -15,6 +19,10 @@ end
 
 
 function Dropdown:close()
+    TweenService:Create(self.dropdown, TweenInfo.new(0.4), {
+        Size = UDim2.new(0, 215, 0, 18)
+    }):Play()
+
     TweenService:Create(self.Box.Options, TweenInfo.new(0.4), {
         Size = UDim2.new(0, 113, 0, 20)
     }):Play()
@@ -59,6 +67,12 @@ function Dropdown:create()
         local option = Dropdown.assets.option:Clone()
         option.Parent = dropdown.Box.Options
         option.Text = value
+
+        if value == self.option then
+            TweenService:Create(option, TweenInfo.new(0.4), {
+                TextTransparency = 0
+            }):Play()
+        end
 
         option.MouseButton1Click:Connect(function()
             Dropdown.update({
