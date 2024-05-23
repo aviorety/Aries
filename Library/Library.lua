@@ -5,7 +5,6 @@ local CoreGui = game:GetService('CoreGui')
 --[[
 local Animation = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Animation.lua'))()
 
-local Dropdown = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Dropdown.lua'))()
 local Colorpicker = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Colorpicker.lua'))()
 ]]
 
@@ -15,6 +14,7 @@ local Tab = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/
 local Section = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Section.lua'))()
 local Toggle = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Toggle.lua'))()
 local Slider = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Slider.lua'))()
+local Dropdown = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Dropdown.lua'))()
 local Notification = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/Library/Notification.lua'))()
 
 local Library = {}
@@ -270,7 +270,7 @@ function Library:__init()
                     Library.flags[self.flag] = self.value
                 end
 
-                local slider = Slider.create({
+                Slider.create({
                     Library = Library,
                     Config = Config,
 
@@ -281,6 +281,33 @@ function Library:__init()
                     value = Library.flags[self.flag],
                     maximum_value = self.maximum_value,
                     minimum_value = self.minimum_value,
+
+                    callback = self.callback
+                })
+
+                self.callback(Library.flags[self.flag])
+            end
+
+            function ModuleManager:create_dropdown()
+                section_size += 26
+                
+                section.Size = UDim2.new(0, 251, 0, section_size)
+                section.Modules.Size = UDim2.new(0, 251, 0, section_size - 29)
+
+                if not Library.flags[self.flag] then
+                    Library.flags[self.flag] = self.option
+                end
+
+                Dropdown.create({
+                    Library = Library,
+                    Config = Config,
+
+                    section = section,
+                    name = self.name,
+                    flag = self.flag,
+
+                    option = Library.flags[self.flag],
+                    options = self.options,
 
                     callback = self.callback
                 })
