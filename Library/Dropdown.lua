@@ -3,7 +3,7 @@ local TweenService = game:GetService('TweenService')
 local Dropdown = {}
 Dropdown.assets = {
     dropdown = game:GetObjects('rbxassetid://17588969574'),
-    option = game:GetObjects('rbxassetid://17588976415')
+    option = game:GetObjects('rbxassetid://17589098486')
 }
 
 
@@ -18,6 +18,27 @@ function Dropdown:close()
     TweenService:Create(self.Box.Options, TweenInfo.new(0.4), {
         Size = UDim2.new(0, 113, 0, 20)
     }):Play()
+end
+
+
+function Dropdown:update()
+    for _, object in self.dropdown.Box.Options:GetChildren() do
+        if not object:IsA('TextButton') then
+            continue
+        end
+
+        if object == self.option then
+            TweenService:Create(object, TweenInfo.new(0.4), {
+                TextTransparency = 0
+            }):Play()
+
+            continue
+        end
+        
+        TweenService:Create(object, TweenInfo.new(0.4), {
+            TextTransparency = 0.5
+        }):Play()
+    end
 end
 
 
@@ -40,6 +61,11 @@ function Dropdown:create()
         option.Text = value
 
         option.MouseButton1Click:Connect(function()
+            Dropdown.update({
+                dropdown = dropdown,
+                option = option
+            })
+
             dropdown.Box.Option.Text = value
 
             self.Library.flags[self.flag] = value
