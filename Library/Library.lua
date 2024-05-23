@@ -381,7 +381,7 @@ auto_parry_section.create_dropdown({
     flag = 'direction',
 
     option = 'Classic',
-    options = {'Classic', 'Straight', 'Random', 'High'}
+    options = {'Classic', 'Straight', 'Random', 'High'},
 
     callback = function(result: string)
         warn(result)
