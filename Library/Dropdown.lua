@@ -54,7 +54,7 @@ function Dropdown:create()
 
     for _, value in self.options do
         options += 1
-        list_size += 17
+        list_size += 15
 
         local option = Dropdown.assets.option:Clone()
         option.Parent = dropdown.Box.Options
