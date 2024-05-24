@@ -375,72 +375,74 @@ function Library:__init()
 end
 
 
-local main = Library.__init()
+--[[
+    local main = Library.__init()
 
-local blatant = main.create_tab('rbxassetid://17594480612')
+    local blatant = main.create_tab('rbxassetid://17594480612')
 
-local auto_parry_title = blatant.create_title({
-    name = 'AutoParry',
-    section = 'left'
-})
+    local auto_parry_title = blatant.create_title({
+        name = 'AutoParry',
+        section = 'left'
+    })
 
-local auto_parry_toggle = blatant.create_toggle({
-    name = 'Enabled',
-    flag = 'auto_parry',
-    section = 'left',
+    local auto_parry_toggle = blatant.create_toggle({
+        name = 'Enabled',
+        flag = 'auto_parry',
+        section = 'left',
 
-    callback = function(result: string)
+        callback = function(result: string)
+            
+        end
+    })
+
+    local auto_parry_accuracy_slider = blatant.create_slider({
+        name = 'Accuracy',
+        flag = 'auto_parry_accuracy',
+        section = 'left',
+
+        value = 100,
+        maximum_value = 100,
+        minimum_value = 1,
+
+        callback = function(result: number)
+            
+        end
+    })
+
+    local ai_title = blatant.create_title({
+        name = 'AI',
+        section = 'middle'
+    })
+
+    local ai_toggle = blatant.create_toggle({
+        name = 'Enabled',
+        flag = 'ai',
+        section = 'middle',
+
+        callback = function(result: string)
+            
+        end
+    })
+
+    local world = main.create_tab('rbxassetid://17594472203')
+
+    local custom_ball_title = world.create_title({
+        name = 'CustomBall',
+        section = 'left'
+    })
+
+    local custom_ball_toggle = world.create_toggle({
+        name = 'Enabled',
+        flag = 'custom_ball',
+        section = 'left',
         
-    end
-})
+        callback = function(result: string)
+            
+        end
+    })
 
-local auto_parry_accuracy_slider = blatant.create_slider({
-    name = 'Accuracy',
-    flag = 'auto_parry_accuracy',
-    section = 'left',
-
-    value = 100,
-    maximum_value = 100,
-    minimum_value = 1,
-
-    callback = function(result: number)
-        
-    end
-})
-
-local ai_title = blatant.create_title({
-    name = 'AI',
-    section = 'middle'
-})
-
-local ai_toggle = blatant.create_toggle({
-    name = 'Enabled',
-    flag = 'ai',
-    section = 'middle',
-
-    callback = function(result: string)
-        
-    end
-})
-
-local world = main.create_tab('rbxassetid://17594472203')
-
-local custom_ball_title = world.create_title({
-    name = 'CustomBall',
-    section = 'left'
-})
-
-local custom_ball_toggle = world.create_toggle({
-    name = 'Enabled',
-    flag = 'custom_ball',
-    section = 'left',
-    
-    callback = function(result: string)
-        
-    end
-})
-
-local misc = main.create_tab('rbxassetid://17594481589')
-local settings = main.create_tab('rbxassetid://17594482300')
+    local misc = main.create_tab('rbxassetid://17594481589')
+    local settings = main.create_tab('rbxassetid://17594482300')
+]]
 
 return Library
