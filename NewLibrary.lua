@@ -15,7 +15,9 @@ Library.assets = {
 
     title = game:GetObjects('rbxassetid://17595506467')[1],
     toggle = game:GetObjects('rbxassetid://17595515058')[1],
-    slider = game:GetObjects('rbxassetid://17595853646')[1]
+    slider = game:GetObjects('rbxassetid://17595853646')[1],
+    dropdown = game:GetObjects('rbxassetid://17615201086')[1],
+    option = game:GetObjects('rbxassetid://17615102145')[1]
 }
 Library.flags = {}
 Library.connections = {}
@@ -206,7 +208,7 @@ function Library:__init()
         tab.MouseButton1Click:Connect(function()
             local fill_offset = 0.02 + (0.24 * tab_value)
 
-            TweenService:Create(UI.Container.Top.Tabs.Fill, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+            TweenService:Create(UI.Container.Top.Tabs.Fill, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
                 Position = UDim2.new(fill_offset, 0, 0.5, 0)
             }):Play()
 
@@ -368,6 +370,101 @@ function Library:__init()
 			end)
         end
 
+        function ModulesManager:create_dropdown()
+            local section = self.section == 'middle' and middle_section or self.section == 'right' and right_section or left_section
+            local list_size = 20
+            local list_open = false
+
+            local dropdown = Librar.assets.dropdown:Clone()
+            dropdown.Parent = section
+            dropdown.Box.DropdownName.Text = self.name
+
+            if not Library.flags[self.flag] then
+                Library.flags[self.flag] = self.option
+            end
+
+            local function update()
+                for _, object in dropdown.Box.Options.Options:GetChildren() do
+                    if object.Name ~= 'Option' then
+                        continue
+                    end
+
+                    if object.Text == Library.flags[self.flag] then
+                        TweenService:Create(object, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                            TextTransparency = 0
+                        }):Play()
+
+                        continue
+                    end
+
+                    TweenService:Create(object, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                        TextTransparency = 0.5
+                    }):Play()
+                end
+            end
+
+            local function open()
+                dropdown.Box.DropdownName.Text = Library.flags[self.flag]
+
+                TweenService:Create(dropdown, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                    Size = UDim2.new(0, 222, 0, 40 + list_size)
+                }):Play()
+
+                TweenService:Create(dropdown.Options, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                    Size = UDim2.new(0, 200, 0, list_size)
+                }):Play()
+
+                TweenService:Create(dropdown.Options.Options, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                    Size = UDim2.new(0, 200, 0, list_size)
+                }):Play()
+            end
+
+            local function close()
+                dropdown.Box.DropdownName.Text = self.name
+
+                TweenService:Create(dropdown, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                    Size = UDim2.new(0, 222, 0, 44)
+                }):Play()
+
+                TweenService:Create(dropdown.Options, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                    Size = UDim2.new(0, 200, 0, 0)
+                }):Play()
+
+                TweenService:Create(dropdown.Options.Options, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                    Size = UDim2.new(0, 200, 0, 0)
+                }):Play()
+            end
+
+            for _, value in self.options do
+                list_size += 20
+
+                local option = Library.assets.option:Clone()
+                option.Text = value
+                option.Parent = dropdown.Box.Options.Options
+
+                option.MouseButton1Click:Connect(function()
+                    Library.flags[self.flag] = value
+
+                    if list_open then
+                        dropdown.Box.ChoosedOption.Text = Library.flags[self.flag]
+                    end
+
+                    update()
+                    self.callback(Library.flags[self.flag])
+                end)
+            end
+
+            dropdown.MouseButton1Click:Connect(function()
+                list_open = not list_open
+
+                if list_open then
+                    open()
+                else
+                    close()
+                end
+            end)
+        end
+
         return ModulesManager
     end
 
@@ -380,12 +477,12 @@ local main = Library.__init()
 
 local blatant = main.create_tab('rbxassetid://17594480612')
 
-local auto_parry_title = blatant.create_title({
+blatant.create_title({
     name = 'AutoParry',
     section = 'left'
 })
 
-local auto_parry_toggle = blatant.create_toggle({
+blatant.create_toggle({
     name = 'Enabled',
     flag = 'auto_parry',
     section = 'left',
@@ -395,7 +492,7 @@ local auto_parry_toggle = blatant.create_toggle({
     end
 })
 
-local auto_parry_accuracy_slider = blatant.create_slider({
+blatant.create_slider({
     name = 'Accuracy',
     flag = 'auto_parry_accuracy',
     section = 'left',
@@ -405,6 +502,19 @@ local auto_parry_accuracy_slider = blatant.create_slider({
     minimum_value = 1,
 
     callback = function(result: number)
+        
+    end
+})
+
+blatant.create_dropdown({
+    name = 'Direction',
+    flag = 'auto_parry_direction',
+    section = 'left',
+
+    option = 'Classic',
+    options = {'Classic', 'Straight', 'High', 'Random'},
+
+    callback = function(result: string)
         
     end
 })
