@@ -1,66 +1,78 @@
-local CoreGui = game:GetService('CoreGui')
-local HttpService = game:GetService('HttpService')
-local TweenService = game:GetService('TweenService')
-local LocalPlayer = game:GetService('Players').LocalPlayer
 local UserInputService = game:GetService('UserInputService')
+local LocalPlayer = game:GetService('Players').LocalPlayer
+local TweenService = game:GetService('TweenService')
+local HttpService = game:GetService('HttpService')
+local CoreGui = game:GetService('CoreGui')
 
 local mouse = LocalPlayer:GetMouse()
 
-for _, object in CoreGui:GetChildren() do
-	if object.Name ~= 'Aries' then
-		continue
-	end
-
-	object:Destroy()
-end
-
 local Library = {}
+Library.assets = {
+    tab = game:GetObjects('rbxassetid://17594615079')[1],
+    left_section = game:GetObjects('rbxassetid://17595376754')[1],
+    middle_section = game:GetObjects('rbxassetid://17595382778')[1],
+    right_section = game:GetObjects('rbxassetid://17595390995')[1],
+
+    title = game:GetObjects('rbxassetid://17595506467')[1],
+    toggle = game:GetObjects('rbxassetid://17595515058')[1],
+    slider = game:GetObjects('rbxassetid://17595853646')[1],
+    dropdown = game:GetObjects('rbxassetid://17615201086')[1],
+    option = game:GetObjects('rbxassetid://17615102145')[1]
+}
 Library.flags = {}
-Library.enabled = true
+Library.connections = {}
+
+Library.UI = nil
+Library.UI_open = true
+
 Library.slider_drag = false
-Library.core = nil
 
-Library.dragging = false
-Library.drag_position = nil
-Library.start_position = nil
-
-
-if not isfolder(`Aries`) then
-	makefolder(`Aries`)
+if not isfolder(`Atonium`) then
+	makefolder(`Atonium`)
 end
 
 
-function Library:exist()
-	if not Library.core then
-		return
-	end
+function Library:disconnect()
+    for _, value in Library.connections do
+        if not Library.connections[value] then
+            continue
+        end
 
-	if not Library.core.Parent then
-		return
-	end
+        Library.connections[value]:Disconnect()
+        Library.connections[value] = nil
+    end
+end
 
-	return true
+
+function Library:clear()
+    for _, object in CoreGui:GetChildren() do
+        if object.Name ~= 'Atonium' then
+            continue
+        end
+
+        object:Destroy()
+    end
 end
 
 
 function Library:save_flags()
-	if not Library.exist() then
+	if not Library.UI or not Library.UI.Parent then
 		return
 	end
 
 	local flags = HttpService:JSONEncode(Library.flags)
-	writefile(`Aries/{game.GameId}.lua`, flags)
+	writefile(`Atonium/{game.GameId}.lua`, flags)
 end
 
 
 function Library:load_flags()
-	if not isfile(`Aries/{game.GameId}.lua`) then
+	if not isfile(`Atonium/{game.GameId}.lua`) then
 		Library.save_flags()
 
 		return
 	end
 
-	local flags = readfile(`Aries/{game.GameId}.lua`)
+	local flags = readfile(`Atonium/{game.GameId}.lua`)
 
 	if not flags then
 		Library.save_flags()
@@ -73,559 +85,502 @@ end
 
 
 Library.load_flags()
+Library.clear()
 
 
-function Library:open()
-	self.Container.Visible = true
-	self.Shadow.Visible = true
-	self.Mobile.Modal = true
+function Library:__init()
+    local UI = game:GetObjects('rbxassetid://17595672802')[1]
+    UI.Parent = CoreGui
+    UI.Container.UIScale.Scale = 0
 
-	TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-		Size = UDim2.new(0, 699, 0, 426)
-	}):Play()
+    Library.UI = UI
 
-	TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-		Size = UDim2.new(0, 776, 0, 509)
-	}):Play()
-end
+    function Library:open()
+        TweenService:Create(UI.Container.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+            Scale = 1
+        }):Play()
+    end
 
+    function Library:close()
+        TweenService:Create(UI.Container.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+            Scale = 0
+        }):Play()
+    end
 
-function Library:close()
-	TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-		Size = UDim2.new(0, 0, 0, 0)
-	}):Play()
+    Library.open()
 
-	local main_tween = TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-		Size = UDim2.new(0, 0, 0, 0)
-	})
+    UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
+        if not UI or not UI.Parent then
+            return
+        end
 
-	main_tween:Play()
-	main_tween.Completed:Once(function()
-		if Library.enabled then
-			return
-		end
+        if input.KeyCode == Enum.KeyCode.Insert or input.KeyCode == Enum.KeyCode.RightShift then
+            Library.UI_open = not Library.UI_open
 
-		self.Container.Visible = false
-		self.Shadow.Visible = false
-		self.Mobile.Modal = false
-	end)
-end
+            if Library.UI_open then
+                Library.open()
+            else
+                Library.close()
+            end
+        end
+    end)
 
+    local TabsManager = {}
+    TabsManager.tab_value = -1
+    TabsManager.tab_size = 8
 
-function Library:drag()
-	if not Library.drag_position then
-		return
-	end
-	
-	if not Library.start_position then
-		return
-	end
-	
-	local delta = self.input.Position - Library.drag_position
-	local position = UDim2.new(Library.start_position.X.Scale, Library.start_position.X.Offset + delta.X, Library.start_position.Y.Scale, Library.start_position.Y.Offset + delta.Y)
+    function TabsManager:update()
+        for _, object in UI.Container.Top.Tabs.Storage:GetChildren() do
+            if object.Name ~= 'Tab' then
+                continue
+            end
 
-	TweenService:Create(self.container.Container, TweenInfo.new(0.2), {
-		Position = position
-	}):Play()
+            if object == self.tab then
+                TweenService:Create(object.Icon, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    ImageTransparency = 0
+                }):Play()
 
-    TweenService:Create(self.container.Shadow, TweenInfo.new(0.2), {
-		Position = position
-	}):Play()
-end
+                continue
+            end
 
+            TweenService:Create(object.Icon, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                ImageTransparency = 0.5
+            }):Play()
+        end
 
-function Library:visible()
-	Library.enabled = not Library.enabled
+        for _, object in UI.Container:GetChildren() do
+            if not object.Name:find('Section') then
+                continue
+            end
 
-	if Library.enabled then
-		Library.open(self)
-	else
-		Library.close(self)
-	end
-end
+            if object == self.left_section or object == self.middle_section or object == self.right_section then
+                object.Size = UDim2.new(0, 222, 0, 0)
+                object.UIListLayout.Padding = UDim.new(0, 500)
+                object.Visible = true
 
+                TweenService:Create(object.UIListLayout, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Padding = UDim.new(0, 6)
+                }):Play()
 
-function Library:new()
-	local container = game:GetObjects('rbxassetid://17291182583')[1]
-	container.Parent = CoreGui
+                TweenService:Create(object, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 222, 0, 341)
+                }):Play()
 
-	Library.core = container
+                continue
+            end
 
-	local tabs = game:GetObjects('rbxassetid://17290916582')[1]
-	tabs.Parent = container.Container
+            object.Size = UDim2.new(0, 222, 0, 0)
+            object.UIListLayout.Padding = UDim.new(0, 1000)
+            object.Visible = false
+        end
+    end
 
-	local mobile_button = game:GetObjects('rbxassetid://17338575060')[1]
-	mobile_button.Parent = container
+    function TabsManager:create_tab()
+        TabsManager.tab_value += 1
+        TabsManager.tab_size += 40
 
-	container.Container.InputBegan:Connect(function(input: InputObject)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            Library.dragging = true
-            Library.drag_position = input.Position
-            Library.start_position = container.Container.Position
+        local tab_value = TabsManager.tab_value
+        local tab = Library.assets.tab:Clone()
+        tab.Icon.Image = self
 
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-					Library.dragging = false
-					Library.drag_position = nil
-					Library.start_position = nil
+        local left_section = Library.assets.left_section:Clone()
+        left_section.Parent = UI.Container
+
+        local middle_section = Library.assets.middle_section:Clone()
+        middle_section.Parent = UI.Container
+
+        local right_section = Library.assets.right_section:Clone()
+        right_section.Parent = UI.Container
+
+        if not UI.Container.Top.Tabs.Storage:FindFirstChild('Tab') then
+            tab.Parent = UI.Container.Top.Tabs.Storage
+
+            TabsManager.update({
+                tab = tab,
+                left_section = left_section,
+                middle_section = middle_section,
+                right_section = right_section
+            })
+        else
+            left_section.Visible = false
+            middle_section.Visible = false
+            right_section.Visible = false
+        end
+
+        tab.Parent = UI.Container.Top.Tabs.Storage
+
+        TweenService:Create(UI.Container.Top.Tabs, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+            Size = UDim2.new(0, TabsManager.tab_size, 0, 30)
+        }):Play()
+
+        TweenService:Create(UI.Container.Top.Tabs.Storage, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+            Size = UDim2.new(0, TabsManager.tab_size - 8, 0, 30)
+        }):Play()
+
+        tab.MouseButton1Click:Connect(function()
+            local fill_offset = 0.02 + (0.24 * tab_value)
+
+            TweenService:Create(UI.Container.Top.Tabs.Fill, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                Position = UDim2.new(fill_offset, 0, 0.5, 0)
+            }):Play()
+
+            TabsManager.update({
+                tab = tab,
+                left_section = left_section,
+                middle_section = middle_section,
+                right_section = right_section
+            })
+        end)
+
+        local ModulesManager = {}
+
+        function ModulesManager:create_title()
+            local section = self.section == 'middle' and middle_section or self.section == 'right' and right_section or left_section
+
+            local title = Library.assets.title:Clone()
+            title.Parent = section
+            title.Text = self.name
+        end
+
+        function ModulesManager:create_toggle()
+            local section = self.section == 'middle' and middle_section or self.section == 'right' and right_section or left_section
+
+            local toggle = Library.assets.toggle:Clone()
+            toggle.Parent = section
+            toggle.ToggleName.Text = self.name
+            toggle.Box.Checkmark.Rotation = 360
+
+            local function enable()
+                TweenService:Create(toggle.Box, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    BackgroundColor3 = Color3.fromRGB(43, 80, 208)
+                }):Play()
+
+                TweenService:Create(toggle.Box.Checkmark.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Scale = 1
+                }):Play()
+
+                TweenService:Create(toggle.Box.Checkmark, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 0
+                }):Play()
+            end
+
+            local function disable()
+                TweenService:Create(toggle.Box, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    BackgroundColor3 = Color3.fromRGB(18, 18, 21)
+                }):Play()
+
+                TweenService:Create(toggle.Box.Checkmark.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Scale = 0
+                }):Play()
+
+                TweenService:Create(toggle.Box.Checkmark, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 360
+                }):Play()
+            end
+
+            if not Library.flags[self.flag] then
+                Library.flags[self.flag] = false
+            end
+
+            if Library.flags[self.flag] then
+                enable()
+            end
+
+            self.callback(Library.flags[self.flag])
+
+            toggle.MouseButton1Click:Connect(function()
+                Library.flags[self.flag] = not Library.flags[self.flag]
+                Library.save_flags()
+
+                if Library.flags[self.flag] then
+                    enable()
+                else
+                    disable()
                 end
+
+                self.callback(Library.flags[self.flag])
             end)
         end
-    end)
 
-	UserInputService.InputChanged:Connect(function(input: InputObject)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            Library.drag({
-                input = input,
-                container = container
-            })
-        end
-    end)
+        function ModulesManager:create_slider()
+            local section = self.section == 'middle' and middle_section or self.section == 'right' and right_section or left_section
 
-	UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
-		if process then
-			return
-		end
+            local slider = Library.assets.slider:Clone()
+            slider.Parent = section
+            slider.SliderName.Text = self.name
 
-		if not Library.exist() then
-			return
-		end
+            local slider_value = Instance.new('NumberValue', slider)
+            slider_value.Name = 'slider_value'
 
-		if input.KeyCode == Enum.KeyCode.Insert then
-			Library.visible(container)
-		end
-	end)
+            if not Library.flags[self.flag] then
+                Library.flags[self.flag] = self.value
+            end
 
-	mobile_button.MouseButton1Click:Connect(function()
-		Library.visible(container)
-	end)
+            slider.SliderValue.Text = Library.flags[self.flag]
+            self.callback(Library.flags[self.flag])
 
-	local Tab = {}
+            local function update_slider()
+                local result = math.clamp((mouse.X - slider.Box.AbsolutePosition.X) / slider.Box.AbsoluteSize.X, 0, 1)
+    
+                if not result then
+                    return
+                end
+    
+                local number = math.floor(((self.maximum_value - self.minimum_value) * result) + self.minimum_value)
+                local slider_size = math.clamp(result, 0.001, 0.999)
 
-	function Tab:update_sections()
-		self.left_section.Visible = true
-		self.right_section.Visible = true
+                TweenService:Create(slider_value, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                    Value = slider_size
+                }):Play()
+    
+                Library.flags[self.flag] = number
+                slider.SliderValue.Text = number
+                self.callback(number)
+            end
 
-		for _, object in container.Container:GetChildren() do
-			if not object.Name:find('Section') then
-				continue
-			end
-
-			if object == self.left_section then
-				continue
-			end
-
-			if object == self.right_section then
-				continue
-			end
-
-			object.Visible = false
-		end
-	end
-
-	function Tab:open_tab()
-		Tab.update_sections({
-			left_section = self.left_section,
-			right_section = self.right_section
-		})
-
-		TweenService:Create(self.tab.Fill, TweenInfo.new(0.4), {
-			BackgroundTransparency = 0
-		}):Play()
-
-		TweenService:Create(self.tab.Glow, TweenInfo.new(0.4), {
-			ImageTransparency = 0
-		}):Play()
-
-		TweenService:Create(self.tab.TextLabel, TweenInfo.new(0.4), {
-			TextTransparency = 0
-		}):Play()
-
-		TweenService:Create(self.tab.Logo, TweenInfo.new(0.4), {
-			ImageTransparency = 0
-		}):Play()
-
-		for _, object in tabs:GetChildren() do
-			if object.Name ~= 'Tab' then
-				continue
-			end
-
-			if object == self.tab then
-				continue
-			end
-
-			TweenService:Create(object.Fill, TweenInfo.new(0.4), {
-				BackgroundTransparency = 1
-			}):Play()
-
-			TweenService:Create(object.Glow, TweenInfo.new(0.4), {
-				ImageTransparency = 1
-			}):Play()
-	
-			TweenService:Create(object.TextLabel, TweenInfo.new(0.4), {
-				TextTransparency = 0.5
-			}):Play()
-	
-			TweenService:Create(object.Logo, TweenInfo.new(0.4), {
-				ImageTransparency = 0.5
-			}):Play()
-		end
-	end
-
-	function Tab:create_tab()
-		local tab = game:GetObjects('rbxassetid://17291017542')[1]
-		tab.Parent = tabs
-		tab.TextLabel.Text = self
-
-		local left_section = game:GetObjects('rbxassetid://17416841186')[1]
-		local right_section = game:GetObjects('rbxassetid://17416847297')[1]
-
-		if container.Container:FindFirstChild('RightSection') then
-			left_section.Visible = false
-			right_section.Visible = false
-		else
-			Tab.open_tab({
-				tab = tab,
-				left_section = left_section,
-				right_section = right_section
-			})
-		end
-
-		left_section.Parent = container.Container
-		right_section.Parent = container.Container
-
-		tab.MouseButton1Click:Connect(function()
-			Tab.open_tab({
-				tab = tab,
-				left_section = left_section,
-				right_section = right_section
-			})
-		end)
-
-		local Module = {}
-
-		function Module:create_title()
-			local section = self.section == 'left' and left_section or right_section
-
-			local title = game:GetObjects('rbxassetid://17291106124')[1]
-			title.Parent = section
-			title.Text = self.name
-		end
-
-		function Module:enable_toggle()
-			TweenService:Create(self.Checkbox.Fill, TweenInfo.new(0.4), {
-				BackgroundTransparency = 0
-			}):Play()
-
-			TweenService:Create(self.Checkbox.Glow, TweenInfo.new(0.4), {
-				ImageTransparency = 0
-			}):Play()
-		end
-
-		function Module:disable_toggle()
-			TweenService:Create(self.Checkbox.Fill, TweenInfo.new(0.4), {
-				BackgroundTransparency = 1
-			}):Play()
-
-			TweenService:Create(self.Checkbox.Glow, TweenInfo.new(0.4), {
-				ImageTransparency = 1
-			}):Play()
-		end
-
-		function Module:update_toggle()
-			if self.state then
-				Module.enable_toggle(self.toggle)
-			else
-				Module.disable_toggle(self.toggle)
-			end
-		end
-
-		function Module:create_toggle()
-			local section = self.section == 'left' and left_section or right_section
-
-			local toggle = game:GetObjects('rbxassetid://17291122957')[1]
-			toggle.Parent = section
-			toggle.TextLabel.Text = self.name
-
-			if not Library.flags[self.flag] then
-				Library.flags[self.flag] = self.enabled
-			end
-
-			self.callback(Library.flags[self.flag])
-			
-			Module.update_toggle({
-				state = Library.flags[self.flag],
-				toggle = toggle
-			})
-
-			toggle.MouseButton1Click:Connect(function()
-				Library.flags[self.flag] = not Library.flags[self.flag]
-				Library.save_flags()
-
-				Module.update_toggle({
-					state = Library.flags[self.flag],
-					toggle = toggle
-				})
-
-				self.callback(Library.flags[self.flag])
-			end)
-		end
-
-		function Module:update_slider()
-			local result = math.clamp((mouse.X - self.slider.Box.AbsolutePosition.X) / self.slider.Box.AbsoluteSize.X, 0, 1)
-
-			if not result then
-				return
-			end
-
-			local number = math.floor(((self.maximum_value - self.minimum_value) * result) + self.minimum_value)
-			local slider_size = math.clamp(result, 0.001, 0.999)
-			
-			self.slider.Box.Fill.UIGradient.Transparency = NumberSequence.new({
-				NumberSequenceKeypoint.new(0, 0),
-				NumberSequenceKeypoint.new(slider_size, 0),
-				NumberSequenceKeypoint.new(math.min(slider_size + 0.001, 1), 1),
-				NumberSequenceKeypoint.new(1, 1)
-			})
-			
-			self.slider.Box.Glow.UIGradient.Transparency = NumberSequence.new({
-				NumberSequenceKeypoint.new(0, 0),
-				NumberSequenceKeypoint.new(slider_size, 0),
-				NumberSequenceKeypoint.new(math.min(slider_size + 0.03, 1), 1),
-				NumberSequenceKeypoint.new(1, 1)
-			})
-
-			Library.flags[self.flag] = number
-
-			self.slider.Number.Text = number
-			self.callback(number)
-		end
-
-		function Module:slider_loop()
-			Library.slider_drag = true
-			
-			while Library.slider_drag do
-				Module.update_slider(self)
-				
-				task.wait()
-			end
-		end
-
-		function Module:create_slider()
-			local drag = false
-			local section = self.section == 'left' and left_section or right_section
-
-			local slider = game:GetObjects('rbxassetid://17382846106')[1]
-			slider.Parent = section
-			slider.TextLabel.Text = self.name
-			slider.Number.Text = self.value
-
-			if not Library.flags[self.flag] then
-				Library.flags[self.flag] = self.value
-			end
-
-			slider.Number.Text = Library.flags[self.flag]
-			self.callback(Library.flags[self.flag])
-
-			slider.Box.Hitbox.MouseButton1Down:Connect(function()
+            slider.Box.Hitbox.MouseButton1Down:Connect(function()
 				if Library.slider_drag then
 					return
 				end
 
-				Module.slider_loop({
-					slider = slider,
-					flag = self.flag,
-					callback = self.callback,
+				Library.slider_drag = true
+                
+                task.defer(function()
+                    while Library.slider_drag do
+                        update_slider()
 
-					maximum_value = self.maximum_value,
-					minimum_value = self.minimum_value,
-				})
+                        task.wait()
+                    end
+                end)
 			end)
+
+            slider_value.Changed:Connect(function()
+                slider.Box.Fill.UIGradient.Transparency = NumberSequence.new({
+                    NumberSequenceKeypoint.new(0, 0),
+                    NumberSequenceKeypoint.new(slider_value.Value, 0),
+                    NumberSequenceKeypoint.new(math.min(slider_value.Value + 0.001, 1), 1),
+                    NumberSequenceKeypoint.new(1, 1)
+                })
+            end)
+
+            local result = (Library.flags[self.flag] - self.minimum_value) / (self.maximum_value - self.minimum_value)
+            local slider_size = math.clamp(result, 0.001, 0.999)
+
+            slider_value.Value = slider_size
 			
-			UserInputService.InputEnded:Connect(function(input: InputObject, process: boolean)
+			Library.connections[`slider_input_{self.flag}`] = UserInputService.InputEnded:Connect(function(input: InputObject, process: boolean)
+                if not UI or not UI.Parent then
+                    Library.disconnect()
+
+                    return
+                end
+
 				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 					Library.slider_drag = false
 					Library.save_flags()
 				end
 			end)
-		end
+        end
 
-		function Module:create_dropdown()
-			local section = self.section == 'left' and left_section or right_section
-			local list_size = 6
-			local open = false
+        function ModulesManager:create_dropdown()
+            local section = self.section == 'middle' and middle_section or self.section == 'right' and right_section or left_section
 
-			local option = game:GetObjects('rbxassetid://17401027015')[1]
+            local list_size = 4
+            local list_open = false
 
-			local dropdown = game:GetObjects('rbxassetid://17401016934')[1]
-			dropdown.Parent = section
-			dropdown.Box.TextLabel.Text = self.option
+            local dropdown = Library.assets.dropdown:Clone()
+            dropdown.Parent = section
+            dropdown.Box.DropdownName.Text = self.name
 
-			local Dropdown = {}
+            if not Library.flags[self.flag] then
+                Library.flags[self.flag] = self.option
+            end
 
-			function Dropdown:open()
-				TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.4), {
-					Size = UDim2.new(0, 202, 0, list_size)
-				}):Play()
+            local function update()
+                for _, object in dropdown.Box.Options.Options:GetChildren() do
+                    if object.Name ~= 'Option' then
+                        continue
+                    end
 
-				TweenService:Create(dropdown, TweenInfo.new(0.4), {
-					Size = UDim2.new(0, 215, 0, 30 + list_size)
-				}):Play()
+                    if object.Text == Library.flags[self.flag] then
+                        TweenService:Create(object, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                            TextTransparency = 0
+                        }):Play()
 
-				TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(0.4), {
-					Rotation = 180
-				}):Play()
-			end
-			
-			function Dropdown:close()
-				TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.4), {
-					Size = UDim2.new(0, 202, 0, 0)
-				}):Play()
+                        continue
+                    end
 
-				TweenService:Create(dropdown, TweenInfo.new(0.4), {
-					Size = UDim2.new(0, 215, 0, 36)
-				}):Play()
+                    TweenService:Create(object, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                        TextTransparency = 0.5
+                    }):Play()
+                end
+            end
 
-				TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(0.4), {
-					Rotation = 0
-				}):Play()
-			end
+            local function open()
+                dropdown.Box.DropdownName.Text = Library.flags[self.flag]
 
-			function Dropdown:clear()
-				for _, object in dropdown.Box.Options:GetChildren() do
-					if object.Name ~= 'Option' then
-						continue
-					end
+                TweenService:Create(dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 222, 0, 39 + list_size)
+                }):Play()
 
-					object:Destroy()
-				end
-			end
+                TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 200, 0, list_size)
+                }):Play()
 
-			function Dropdown:select_option()
-				TweenService:Create(self.new_option, TweenInfo.new(0.4), {
-					TextTransparency = 0
-				}):Play()
+                TweenService:Create(dropdown.Box.Options.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 200, 0, list_size)
+                }):Play()
 
-				for _, object in dropdown.Box.Options:GetChildren() do
-					if object.Name ~= 'Option' then
-						continue
-					end
+                TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 540
+                }):Play()
+            end
 
-					if object.Text == Library.flags[self.flag] then
-						continue
-					end
+            local function close()
+                dropdown.Box.DropdownName.Text = self.name
 
-					TweenService:Create(object, TweenInfo.new(0.4), {
-						TextTransparency = 0.5
-					}):Play()
-				end
+                TweenService:Create(dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 222, 0, 44)
+                }):Play()
 
-				dropdown.Box.TextLabel.Text = self.new_option.Text
-			end
+                TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 200, 0, 0)
+                }):Play()
 
-			function Dropdown:update()
-				Dropdown.clear()
+                TweenService:Create(dropdown.Box.Options.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 200, 0, 0)
+                }):Play()
 
-				for _, value in self.options do
-					list_size += 23
+                TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 0
+                }):Play()
+            end
 
-					local new_option = option:Clone()
-					new_option.Parent = dropdown.Box.Options
-					new_option.Text = value
-	
-					if value == Library.flags[self.flag] then
-						new_option.TextTransparency = 0
-					end
-	
-					new_option.MouseButton1Click:Connect(function()
-						Library.flags[self.flag] = value
-						Library.save_flags()
-						
-						self.callback(Library.flags[self.flag])
+            for index, value in self.options do
+                if index <= self.maximum_options then
+                    list_size += 20
+                end
 
-						Dropdown.select_option({
-							new_option = new_option,
-							flag = self.flag
-						})
-					end)
-				end
-			end
+                local option = Library.assets.option:Clone()
+                option.Text = value
+                option.Parent = dropdown.Box.Options.Options
 
-			if not Library.flags[self.flag] then
-				Library.flags[self.flag] = self.option
-			else
-				dropdown.Box.TextLabel.Text = Library.flags[self.flag]
-			end
-			
-			self.callback(Library.flags[self.flag])
-			Dropdown.update(self)
+                option.MouseButton1Click:Connect(function()
+                    Library.flags[self.flag] = value
 
-			dropdown.MouseButton1Click:Connect(function()
-				open = not open
+                    if list_open then
+                        dropdown.Box.DropdownName.Text = Library.flags[self.flag]
+                    end
 
-				if open then
-					Dropdown.open()
-				else
-					Dropdown.close()
-				end
-			end)
+                    update()
+                    self.callback(Library.flags[self.flag])
+                    Library.save_flags()
+                end)
+            end
 
-			return Dropdown
-		end
+            dropdown.MouseButton1Click:Connect(function()
+                list_open = not list_open
 
-		return Module
-	end
+                if list_open then
+                    open()
+                else
+                    close()
+                end
+            end)
 
-	return Tab
+            update()
+        end
+
+        return ModulesManager
+    end
+
+    return TabsManager
 end
 
 
---[[local main = Library.new()
-local tab = main.create_tab('Tab')
+--[[
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/NewLibrary.lua'))()
+local main = Library.__init()
 
-tab.create_title({
-	name = 'Section',
-	section = 'left'
+local blatant = main.create_tab('rbxassetid://17594480612')
+
+blatant.create_title({
+    name = 'AutoParry',
+    section = 'left'
 })
 
-tab.create_toggle({
-	name = 'Toggle',
-	flag = 'toggle',
+blatant.create_toggle({
+    name = 'Enabled',
+    flag = 'auto_parry',
+    section = 'left',
 
-	section = 'left',
-	enabled = false,
-
-	callback = function(state: boolean)
-		
-	end
+    callback = function(result: string)
+        
+    end
 })
 
-tab.create_slider({
-	name = 'Slider',
-	flag = 'slider',
+blatant.create_slider({
+    name = 'Accuracy',
+    flag = 'auto_parry_accuracy',
+    section = 'left',
 
-	section = 'left',
+    value = 100,
+    maximum_value = 100,
+    minimum_value = 1,
 
-	value = 50,
-	minimum_value = 0,
-	maximum_value = 100,
-
-	callback = function(value: number)
-		
-	end
+    callback = function(result: number)
+        
+    end
 })
 
-tab.create_dropdown({
-	flag = 'dropdown',
-	section = 'left',
+blatant.create_dropdown({
+    name = 'Direction',
+    flag = 'auto_parry_direction',
+    section = 'left',
 
-	option = 'Option 1',
-	options = {'Option 1', 'Option 2'},
+    option = 'Classic',
+    options = {'Classic', 'Straight', 'High', 'Random'},
+    maximum_options = 3,
 
-	callback = function(value: string)
-		warn(value)
-	end
-})]]
+    callback = function(result: string)
+        
+    end
+})
 
+local ai_title = blatant.create_title({
+    name = 'AI',
+    section = 'middle'
+})
+
+local ai_toggle = blatant.create_toggle({
+    name = 'Enabled',
+    flag = 'ai',
+    section = 'middle',
+
+    callback = function(result: string)
+        
+    end
+})
+
+local world = main.create_tab('rbxassetid://17594472203')
+
+local custom_ball_title = world.create_title({
+    name = 'CustomBall',
+    section = 'left'
+})
+
+local custom_ball_toggle = world.create_toggle({
+    name = 'Enabled',
+    flag = 'custom_ball',
+    section = 'left',
+    
+    callback = function(result: string)
+        
+    end
+})
+
+local misc = main.create_tab('rbxassetid://17594481589')
+local settings = main.create_tab('rbxassetid://17594482300')
+]]
 
 return Library
