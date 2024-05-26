@@ -392,8 +392,6 @@ function Library:__init()
             dropdown.Parent = section
             dropdown.Box.DropdownName.Text = self.name
 
-            warn(dropdown.Box.Size)
-
             if not Library.flags[self.flag] then
                 Library.flags[self.flag] = self.option
             end
@@ -476,6 +474,7 @@ function Library:__init()
 
                     update()
                     self.callback(Library.flags[self.flag])
+                    Library.save_flags()
                 end)
             end
 
