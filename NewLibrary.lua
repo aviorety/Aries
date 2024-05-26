@@ -154,11 +154,23 @@ function Library:__init()
             end
 
             if object == self.left_section or object == self.middle_section or object == self.right_section then
+                object.Size = UDim2.new(0, 222, 0, 0)
+                object.UIListLayout.Padding = UDim.new(0, 500)
                 object.Visible = true
+
+                TweenService:Create(object.UIListLayout, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Padding = UDim.new(0, 6)
+                }):Play()
+
+                TweenService:Create(object, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 222, 0, 341)
+                }):Play()
 
                 continue
             end
 
+            object.Size = UDim2.new(0, 222, 0, 0)
+            object.UIListLayout.Padding = UDim.new(0, 1000)
             object.Visible = false
         end
     end
@@ -372,10 +384,11 @@ function Library:__init()
 
         function ModulesManager:create_dropdown()
             local section = self.section == 'middle' and middle_section or self.section == 'right' and right_section or left_section
+
             local list_size = 20
             local list_open = false
 
-            local dropdown = Librar.assets.dropdown:Clone()
+            local dropdown = Library.assets.dropdown:Clone()
             dropdown.Parent = section
             dropdown.Box.DropdownName.Text = self.name
 
@@ -390,14 +403,14 @@ function Library:__init()
                     end
 
                     if object.Text == Library.flags[self.flag] then
-                        TweenService:Create(object, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                        TweenService:Create(object, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
                             TextTransparency = 0
                         }):Play()
 
                         continue
                     end
 
-                    TweenService:Create(object, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                    TweenService:Create(object, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
                         TextTransparency = 0.5
                     }):Play()
                 end
@@ -406,37 +419,47 @@ function Library:__init()
             local function open()
                 dropdown.Box.DropdownName.Text = Library.flags[self.flag]
 
-                TweenService:Create(dropdown, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
-                    Size = UDim2.new(0, 222, 0, 40 + list_size)
+                TweenService:Create(dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 222, 0, 39 + list_size)
                 }):Play()
 
-                TweenService:Create(dropdown.Options, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
                     Size = UDim2.new(0, 200, 0, list_size)
                 }):Play()
 
-                TweenService:Create(dropdown.Options.Options, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                TweenService:Create(dropdown.Box.Options.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
                     Size = UDim2.new(0, 200, 0, list_size)
+                }):Play()
+
+                TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 540
                 }):Play()
             end
 
             local function close()
                 dropdown.Box.DropdownName.Text = self.name
 
-                TweenService:Create(dropdown, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                TweenService:Create(dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
                     Size = UDim2.new(0, 222, 0, 44)
                 }):Play()
 
-                TweenService:Create(dropdown.Options, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
                     Size = UDim2.new(0, 200, 0, 0)
                 }):Play()
 
-                TweenService:Create(dropdown.Options.Options, 0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut, {
+                TweenService:Create(dropdown.Box.Options.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
                     Size = UDim2.new(0, 200, 0, 0)
+                }):Play()
+
+                TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 0
                 }):Play()
             end
 
-            for _, value in self.options do
-                list_size += 20
+            for index, value in self.options do
+                if index <= self.maximum_options then
+                    list_size += 16
+                end
 
                 local option = Library.assets.option:Clone()
                 option.Text = value
@@ -446,7 +469,7 @@ function Library:__init()
                     Library.flags[self.flag] = value
 
                     if list_open then
-                        dropdown.Box.ChoosedOption.Text = Library.flags[self.flag]
+                        dropdown.Box.DropdownName.Text = Library.flags[self.flag]
                     end
 
                     update()
@@ -463,6 +486,8 @@ function Library:__init()
                     close()
                 end
             end)
+
+            update()
         end
 
         return ModulesManager
@@ -473,6 +498,7 @@ end
 
 
 --[[
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/NewLibrary.lua'))()
 local main = Library.__init()
 
 local blatant = main.create_tab('rbxassetid://17594480612')
@@ -513,6 +539,7 @@ blatant.create_dropdown({
 
     option = 'Classic',
     options = {'Classic', 'Straight', 'High', 'Random'},
+    maximum_options = 3,
 
     callback = function(result: string)
         
