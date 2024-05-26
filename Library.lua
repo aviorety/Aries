@@ -9,15 +9,15 @@ local mouse = LocalPlayer:GetMouse()
 local Library = {}
 Library.assets = {
     tab = game:GetObjects('rbxassetid://17594615079')[1],
-    left_section = game:GetObjects('rbxassetid://17595376754')[1],
-    middle_section = game:GetObjects('rbxassetid://17595382778')[1],
-    right_section = game:GetObjects('rbxassetid://17595390995')[1],
+    left_section = game:GetObjects('rbxassetid://17625905436')[1],
+    middle_section = game:GetObjects('rbxassetid://17625910943')[1],
+    right_section = game:GetObjects('rbxassetid://17625913258')[1],
 
     title = game:GetObjects('rbxassetid://17595506467')[1],
     toggle = game:GetObjects('rbxassetid://17595515058')[1],
     slider = game:GetObjects('rbxassetid://17595853646')[1],
-    dropdown = game:GetObjects('rbxassetid://17615201086')[1],
-    option = game:GetObjects('rbxassetid://17615102145')[1]
+    dropdown = game:GetObjects('rbxassetid://17625931042')[1],
+    option = game:GetObjects('rbxassetid://17625935548')[1]
 }
 Library.flags = {}
 Library.connections = {}
