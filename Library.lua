@@ -89,7 +89,7 @@ Library.clear()
 
 
 function Library:__init()
-    local UI = game:GetObjects('rbxassetid://17595672802')[1]
+    local UI = game:GetObjects('rbxassetid://17626007114')[1]
     UI.Parent = CoreGui
     UI.Container.UIScale.Scale = 0
 
@@ -122,6 +122,16 @@ function Library:__init()
             else
                 Library.close()
             end
+        end
+    end)
+
+    UI.Mobile.MouseButton1Click:Connect(function()
+        Library.UI_open = not Library.UI_open
+
+        if Library.UI_open then
+            Library.open()
+        else
+            Library.close()
         end
     end)
 
