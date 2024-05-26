@@ -385,12 +385,14 @@ function Library:__init()
         function ModulesManager:create_dropdown()
             local section = self.section == 'middle' and middle_section or self.section == 'right' and right_section or left_section
 
-            local list_size = 18
+            local list_size = 4
             local list_open = false
 
             local dropdown = Library.assets.dropdown:Clone()
             dropdown.Parent = section
             dropdown.Box.DropdownName.Text = self.name
+
+            warn(dropdown.Box.Size)
 
             if not Library.flags[self.flag] then
                 Library.flags[self.flag] = self.option
@@ -458,7 +460,7 @@ function Library:__init()
 
             for index, value in self.options do
                 if index <= self.maximum_options then
-                    list_size += 17
+                    list_size += 20
                 end
 
                 local option = Library.assets.option:Clone()
