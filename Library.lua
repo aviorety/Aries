@@ -524,7 +524,7 @@ blatant.create_toggle({
     flag = 'auto_parry',
     section = 'left',
 
-    callback = function(result: string)
+    callback = function(result: boolean)
         
     end
 })
@@ -567,7 +567,7 @@ local ai_toggle = blatant.create_toggle({
     flag = 'ai',
     section = 'middle',
 
-    callback = function(result: string)
+    callback = function(result: boolean)
         
     end
 })
@@ -584,7 +584,7 @@ local custom_ball_toggle = world.create_toggle({
     flag = 'custom_ball',
     section = 'left',
     
-    callback = function(result: string)
+    callback = function(result: boolean)
         
     end
 })
