@@ -27,9 +27,28 @@ function Library.new()
 
     function TabManager:create_tab()
         local tab = Library.assets.tab:Clone()
-        tab.Parent = Library.UI.Container.Tabs.List
         tab.Label.Text = self.name
         tab.Icon.Image = self.icon
+
+        if not Library.UI.Container.Tabs.List:FindFirstChild('Tab') then
+            TweenService:Create(tab.Fill, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                ImageTransparency = 0
+            }):Play()
+
+            TweenService:Create(tab.Glow, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                ImageTransparency = 0
+            }):Play()
+
+            TweenService:Create(tab.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                ImageTransparency = 0
+            }):Play()
+
+            TweenService:Create(tab.Label, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                TextTransparency = 0
+            }):Play()
+        end
+
+        tab.Parent = Library.UI.Container.Tabs.List
 
         local function update()
             for _, object in Library.UI.Container.Tabs.List:GetChildren() do
