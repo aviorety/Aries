@@ -10,6 +10,15 @@ Library.UI = nil
 Library.UI_open = true
 
 
+for _, object in CoreGui:GetChildren() do
+    if object.Name ~= 'Flow' then
+        continue
+    end
+
+    object:Destroy()
+end
+
+
 function Library.new()
     Library.UI = game:GetObjects('rbxassetid://17774027224')[1]
     Library.UI.Parent = CoreGui
@@ -20,43 +29,47 @@ function Library.new()
         local tab = Library.assets.tab:Clone()
         tab.Parent = Library.UI.Container.Tabs.List
         tab.Label.Text = self.name
-        tab.Icon.Image = self.Icon
+        tab.Icon.Image = self.icon
 
         local function update()
             for _, object in Library.UI.Container.Tabs.List:GetChildren() do
+                if object.Name ~= 'Tab' then
+                    continue
+                end
+
                 if object == tab then
-                    TweenService:Create(object.Fill, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                    TweenService:Create(object.Fill, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                         ImageTransparency = 0
                     }):Play()
     
-                    TweenService:Create(object.Glow, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                    TweenService:Create(object.Glow, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                         ImageTransparency = 0
                     }):Play()
     
-                    TweenService:Create(object.Icon, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                    TweenService:Create(object.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                         ImageTransparency = 0
                     }):Play()
     
-                    TweenService:Create(object.Label, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                    TweenService:Create(object.Label, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                         TextTransparency = 0
                     }):Play()
 
                     continue
                 end
 
-                TweenService:Create(object.Fill, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                TweenService:Create(object.Fill, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                     ImageTransparency = 1
                 }):Play()
 
-                TweenService:Create(object.Glow, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                TweenService:Create(object.Glow, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                     ImageTransparency = 1
                 }):Play()
 
-                TweenService:Create(object.Icon, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                TweenService:Create(object.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                     ImageTransparency = 0.8
                 }):Play()
 
-                TweenService:Create(object.Label, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                TweenService:Create(object.Label, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                     TextTransparency = 0.8
                 }):Play()
             end
@@ -129,8 +142,24 @@ end
 
 
 local main = Library.new()
-local tab = main.create_tab({
+
+local blatant = main.create_tab({
     name = 'Blatant',
+    icon = 'rbxassetid://17773816885'
+})
+
+local visuals = main.create_tab({
+    name = 'Visuals',
+    icon = 'rbxassetid://17773816885'
+})
+
+local misc = main.create_tab({
+    name = 'Misc',
+    icon = 'rbxassetid://17773816885'
+})
+
+local settings = main.create_tab({
+    name = 'Settings',
     icon = 'rbxassetid://17773816885'
 })
 
