@@ -3,7 +3,11 @@ local CoreGui = game:GetService('CoreGui')
 
 local Library = {}
 Library.assets = {
-    tab = game:GetObjects('rbxassetid://17774101626')[1]
+    tab = game:GetObjects('rbxassetid://17774101626')[1],
+    left_section = game:GetObjects('rbxassetid://17795941028')[1],
+    right_section = game:GetObjects('rbxassetid://17795946150')[1],
+
+    label = game:GetObjects('rbxassetid://17795953323')[1]
 }
 
 Library.UI = nil
@@ -30,6 +34,12 @@ function Library.new()
         tab.Label.Text = self.name
         tab.Icon.Image = self.icon
 
+        local left_section = Library.assets.left_section:Clone()
+        left_section.Parent = Library.UI.Container
+
+        local right_section = Library.assets.right_section:Clone()
+        right_section.Parent = Library.UI.Container
+
         if not Library.UI.Container.Tabs.List:FindFirstChild('Tab') then
             TweenService:Create(tab.Fill, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                 ImageTransparency = 0
@@ -46,11 +56,28 @@ function Library.new()
             TweenService:Create(tab.Label, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                 TextTransparency = 0
             }):Play()
+        else
+            left_section.Visible = false
+            right_section.Visible = false
         end
 
         tab.Parent = Library.UI.Container.Tabs.List
 
         local function update()
+            for _, object in Library.UI.Container:GetChildren() do
+                if not object.Name:find('Section') then
+                    continue
+                end
+
+                if object == left_section or object == right_section then
+                    object.Visible = true
+
+                    continue
+                end
+
+                object.Visible = false
+            end
+
             for _, object in Library.UI.Container.Tabs.List:GetChildren() do
                 if object.Name ~= 'Tab' then
                     continue
@@ -125,6 +152,18 @@ function Library.new()
         tab.MouseButton1Click:Connect(function()
             update()
         end)
+
+        local ModuleManager = {}
+
+        function ModuleManager:create_label()
+            local section = self.section == 'right' and right_section or left_section
+            
+            local label = Library.assets.label:Clone()
+            label.Parent = section
+            label.Text = self.name
+        end
+
+        return ModuleManager
     end
 
     return TabManager
@@ -165,6 +204,11 @@ local main = Library.new()
 local blatant = main.create_tab({
     name = 'Blatant',
     icon = 'rbxassetid://17773816885'
+})
+
+blatant.create_label({
+    name = 'AutoParry',
+    section = 'left'
 })
 
 local visuals = main.create_tab({
