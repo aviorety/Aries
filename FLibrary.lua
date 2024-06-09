@@ -7,8 +7,10 @@ Library.assets = {
     left_section = game:GetObjects('rbxassetid://17795941028')[1],
     right_section = game:GetObjects('rbxassetid://17795946150')[1],
 
-    label = game:GetObjects('rbxassetid://17795953323')[1]
+    label = game:GetObjects('rbxassetid://17796551754')[1],
+    toggle = game:GetObjects('rbxassetid://17796652221')[1]
 }
+Library.flags = {}
 
 Library.UI = nil
 Library.UI_open = true
@@ -56,6 +58,28 @@ function Library.new()
             TweenService:Create(tab.Label, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
                 TextTransparency = 0
             }):Play()
+            
+            left_section.List.UIPadding.PaddingTop = UDim.new(0, 1000)
+            right_section.List.UIPadding.PaddingTop = UDim.new(0, 1000)
+
+            left_section.List.UIListLayout.Padding = UDim.new(0, 1000)
+            right_section.List.UIListLayout.Padding = UDim.new(0, 1000)
+            
+            TweenService:Create(left_section.List.UIPadding, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                PaddingTop = UDim.new(0, 10)
+            }):Play()
+                        
+            TweenService:Create(right_section.List.UIPadding, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                PaddingTop = UDim.new(0, 10)
+            }):Play()
+            
+            TweenService:Create(left_section.List.UIListLayout, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                Padding = UDim.new(0, 2)
+            }):Play()
+
+            TweenService:Create(right_section.List.UIListLayout, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                Padding = UDim.new(0, 2)
+            }):Play()
         else
             left_section.Visible = false
             right_section.Visible = false
@@ -71,6 +95,16 @@ function Library.new()
 
                 if object == left_section or object == right_section then
                     object.Visible = true
+                    object.List.UIPadding.PaddingTop = UDim.new(0, 1000)
+                    object.List.UIListLayout.Padding = UDim.new(0, 1000)
+                    
+                    TweenService:Create(object.List.UIPadding, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                        PaddingTop = UDim.new(0, 10)
+                    }):Play()
+
+                    TweenService:Create(object.List.UIListLayout, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                        Padding = UDim.new(0, 2)
+                    }):Play()
 
                     continue
                 end
@@ -156,11 +190,79 @@ function Library.new()
         local ModuleManager = {}
 
         function ModuleManager:create_label()
-            local section = self.section == 'right' and right_section or left_section
+            local section = self.section == 'right' and right_section.List or left_section.List
             
             local label = Library.assets.label:Clone()
             label.Parent = section
             label.Text = self.name
+        end
+
+        function ModuleManager:create_toggle()
+            local section = self.section == 'right' and right_section.List or left_section.List
+            
+            local toggle = Library.assets.toggle:Clone()
+            toggle.Parent = section
+            toggle.Label.Text = self.name
+
+            local function enable()
+                TweenService:Create(toggle.Label, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                    TextTransparency = 0
+                }):Play()
+
+                TweenService:Create(toggle.Box.Checkmark, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 0
+                }):Play()
+
+                TweenService:Create(toggle.Box.Checkmark.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Scale = 1
+                }):Play()
+
+                TweenService:Create(toggle.Box.Fill, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                    ImageTransparency = 0
+                }):Play()
+
+                TweenService:Create(toggle.Box.Glow, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                    ImageTransparency = 0.2
+                }):Play()
+            end
+
+            local function disable()
+                TweenService:Create(toggle.Label, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                    TextTransparency = 0.8
+                }):Play()
+                
+                TweenService:Create(toggle.Box.Checkmark, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 360
+                }):Play()
+
+                TweenService:Create(toggle.Box.Checkmark.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Scale = 0
+                }):Play()
+
+                TweenService:Create(toggle.Box.Fill, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                    ImageTransparency = 1
+                }):Play()
+
+                TweenService:Create(toggle.Box.Glow, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                    ImageTransparency = 1
+                }):Play()
+            end
+
+            if Library.flags[self.flag] then
+                self.callback(Library.flags[self.flag])
+                enable()
+            end
+
+            toggle.MouseButton1Click:Connect(function()
+                Library.flags[self.flag] = not Library.flags[self.flag]
+                self.callback(Library.flags[self.flag])
+
+                if Library.flags[self.flag] then
+                    enable()
+                else
+                    disable()
+                end
+            end)
         end
 
         return ModuleManager
@@ -209,6 +311,16 @@ local blatant = main.create_tab({
 blatant.create_label({
     name = 'AutoParry',
     section = 'left'
+})
+
+blatant.create_toggle({
+    name = 'Enabled',
+    flag = 'auto_parry',
+    section = 'left',
+
+    callback = function(result: boolean)
+        warn(result)
+    end
 })
 
 local visuals = main.create_tab({
