@@ -3,6 +3,7 @@ local TweenService = game:GetService('TweenService')
 local CoreGui = game:GetService('CoreGui')
 
 local Library = {}
+Library.connections = {}
 Library.flags = {}
 Library.assets = {
     tab = game:GetObjects('rbxassetid://17774101626')[1],
@@ -50,8 +51,9 @@ end
 function Library:get_screen_scale()
     local viewport_size_x = workspace.CurrentCamera.ViewportSize.X
     local viewport_size_y = workspace.CurrentCamera.ViewportSize.Y
+    local screen_size = (viewport_size_x + viewport_size_y) / 3000
 
-    Library.UI_scale = (viewport_size_x + viewport_size_y) / 3000
+    Library.UI_scale = screen_size + math.max(0.85 - screen_size, 0)
 end
 
 
@@ -65,25 +67,43 @@ end
 
 
 function Library.new()
-    Library.UI = game:GetObjects('rbxassetid://17774027224')[1]
+    Library.UI = game:GetObjects('rbxassetid://17797978847')[1]
     Library.UI.Parent = CoreGui
+
+    Library.connections['rescale'] = workspace.CurrentCamera:GetPropertyChangedSignal('ViewportSize'):Connect(function()
+        Library.get_screen_scale()
+    
+        if not Library.UI_open then
+            return
+        end
+
+        Library.UI.Container.UIScale.Scale = Library.UI_scale
+    end)
+
+    Library.connections['ui_detect'] = Library.UI.Changed:Connect(function()
+        if Library.UI and Library.UI.Parent then
+            return
+        end
+    
+        for _, value in Library.connections do
+            if typeof(value) == 'function' then
+                continue
+            end
+    
+            value:Disconnect()
+        end
+    
+        warn(`[debug]: all connections has been disconnected`)
+    end)
 
     function Library:open()
         TweenService:Create(Library.UI.Container.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
-            Scale = Library.UI_scale
-        }):Play()
-
-        TweenService:Create(Library.UI.Shadow.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
             Scale = Library.UI_scale
         }):Play()
     end
 
     function Library:close()
         TweenService:Create(Library.UI.Container.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
-            Scale = 0
-        }):Play()
-
-        TweenService:Create(Library.UI.Shadow.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
             Scale = 0
         }):Play()
     end
@@ -355,7 +375,7 @@ function Library.__init()
     Library.get_screen_scale()
 
     Library.UI.Container.UIScale.Scale = 0
-    Library.UI.Shadow.UIScale.Scale = 0
+    Library.UI.Watermark.UIScale.Scale = 0
     
     Library.UI.Container.Tabs.List.UIPadding.PaddingTop = UDim.new(0, 1000)
     Library.UI.Container.Tabs.List.UIListLayout.Padding = UDim.new(0, 1000)
@@ -363,9 +383,9 @@ function Library.__init()
     TweenService:Create(Library.UI.Container.UIScale, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
         Scale = Library.UI_scale
     }):Play()
-    
-    TweenService:Create(Library.UI.Shadow.UIScale, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
-        Scale = Library.UI_scale
+
+    TweenService:Create(Library.UI.Watermark.UIScale, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+        Scale = Library.UI_scale + 0.1
     }):Play()
     
     TweenService:Create(Library.UI.Container.Tabs.List.UIPadding, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
@@ -376,16 +396,6 @@ function Library.__init()
         Padding = UDim.new(0, 4)
     }):Play()
 end
-
-
-workspace.CurrentCamera:GetPropertyChangedSignal('ViewportSize'):Connect(function()
-    Library.get_screen_scale()
-
-    if Library.UI_open then
-        Library.UI.Container.UIScale.Scale = Library.UI_scale
-        Library.UI.Shadow.UIScale.Scale = Library.UI_scale
-    end
-end)
 
 
 local main = Library.new()
@@ -405,7 +415,7 @@ blatant.create_toggle({
     flag = 'auto_parry',
     section = 'left',
 
-    callback = function(result: boolean)
+    callback = function(value: boolean)
         
     end
 })
