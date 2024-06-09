@@ -1,7 +1,9 @@
+local UserInputService = game:GetService('UserInputService')
 local TweenService = game:GetService('TweenService')
 local CoreGui = game:GetService('CoreGui')
 
 local Library = {}
+Library.flags = {}
 Library.assets = {
     tab = game:GetObjects('rbxassetid://17774101626')[1],
     left_section = game:GetObjects('rbxassetid://17795941028')[1],
@@ -10,10 +12,47 @@ Library.assets = {
     label = game:GetObjects('rbxassetid://17796551754')[1],
     toggle = game:GetObjects('rbxassetid://17796652221')[1]
 }
-Library.flags = {}
 
 Library.UI = nil
 Library.UI_open = true
+Library.UI_scale = 1
+
+
+function Library:save_flags()
+	if not Library.UI or not Library.UI.Parent then
+		return
+	end
+
+	local flags = HttpService:JSONEncode(Library.flags)
+	writefile(`Flow/{game.GameId}.lua`, flags)
+end
+
+
+function Library:load_flags()
+	if not isfile(`Flow/{game.GameId}.lua`) then
+		Library.save_flags()
+
+		return
+	end
+
+	local flags = readfile(`Flow/{game.GameId}.lua`)
+
+	if not flags then
+		Library.save_flags()
+
+		return
+	end
+	
+	Library.flags = HttpService:JSONDecode(flags)
+end
+
+
+function Library:get_screen_scale()
+    local viewport_size_x = workspace.CurrentCamera.ViewportSize.X
+    local viewport_size_y = workspace.CurrentCamera.ViewportSize.Y
+
+    Library.UI_scale = (viewport_size_x + viewport_size_y) / 3000
+end
 
 
 for _, object in CoreGui:GetChildren() do
@@ -28,6 +67,42 @@ end
 function Library.new()
     Library.UI = game:GetObjects('rbxassetid://17774027224')[1]
     Library.UI.Parent = CoreGui
+
+    function Library:open()
+        TweenService:Create(Library.UI.Container.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+            Scale = Library.UI_scale
+        }):Play()
+
+        TweenService:Create(Library.UI.Shadow.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+            Scale = Library.UI_scale
+        }):Play()
+    end
+
+    function Library:close()
+        TweenService:Create(Library.UI.Container.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+            Scale = 0
+        }):Play()
+
+        TweenService:Create(Library.UI.Shadow.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+            Scale = 0
+        }):Play()
+    end
+
+    UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
+        if not Library.UI or not Library.UI.Parent then
+            return
+        end
+
+        if input.KeyCode == Enum.KeyCode.Insert or input.KeyCode == Enum.KeyCode.RightShift then
+            Library.UI_open = not Library.UI_open
+
+            if Library.UI_open then
+                Library.open()
+            else
+                Library.close()
+            end
+        end
+    end)
 
     local TabManager = {}
 
@@ -277,6 +352,8 @@ function Library.__init()
         return
     end
 
+    Library.get_screen_scale()
+
     Library.UI.Container.UIScale.Scale = 0
     Library.UI.Shadow.UIScale.Scale = 0
     
@@ -284,11 +361,11 @@ function Library.__init()
     Library.UI.Container.Tabs.List.UIListLayout.Padding = UDim.new(0, 1000)
 
     TweenService:Create(Library.UI.Container.UIScale, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
-        Scale = 1
+        Scale = Library.UI_scale
     }):Play()
     
     TweenService:Create(Library.UI.Shadow.UIScale, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
-        Scale = 1
+        Scale = Library.UI_scale
     }):Play()
     
     TweenService:Create(Library.UI.Container.Tabs.List.UIPadding, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
@@ -299,6 +376,16 @@ function Library.__init()
         Padding = UDim.new(0, 4)
     }):Play()
 end
+
+
+workspace.CurrentCamera:GetPropertyChangedSignal('ViewportSize'):Connect(function()
+    Library.get_screen_scale()
+
+    if Library.UI_open then
+        Library.UI.Container.UIScale.Scale = Library.UI_scale
+        Library.UI.Shadow.UIScale.Scale = Library.UI_scale
+    end
+end)
 
 
 local main = Library.new()
@@ -319,7 +406,7 @@ blatant.create_toggle({
     section = 'left',
 
     callback = function(result: boolean)
-        warn(result)
+        
     end
 })
 
