@@ -51,9 +51,11 @@ end
 function Library:get_screen_scale()
     local viewport_size_x = workspace.CurrentCamera.ViewportSize.X
     local viewport_size_y = workspace.CurrentCamera.ViewportSize.Y
-    local screen_size = (viewport_size_x + viewport_size_y) / 3000
 
-    Library.UI_scale = screen_size + math.max(0.85 - screen_size, 0)
+    local screen_size = (viewport_size_x + viewport_size_y) / 3000
+    local screen_size_threshold = math.max(0.85 - screen_size, 0)
+
+    Library.UI_scale = screen_size + screen_size_threshold
 end
 
 
