@@ -400,6 +400,7 @@ function Library.__init()
 end
 
 
+--[[
 local main = Library.new()
 
 local blatant = main.create_tab({
@@ -438,6 +439,7 @@ local settings = main.create_tab({
 })
 
 Library.__init()
+]]
 
 
 return Library
