@@ -644,8 +644,8 @@ local misc = main.create_tab({
 local settings = main.create_tab({
     name = 'Settings',
     icon = 'rbxassetid://17773816885'
-})]]
+})
 
-Library.__init()
+Library.__init()]]
 
 return Library
