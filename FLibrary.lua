@@ -1,6 +1,10 @@
 local UserInputService = game:GetService('UserInputService')
+local LocalPlayer = game:GetService('Players').LocalPlayer
 local TweenService = game:GetService('TweenService')
+local HttpService = game:GetService('HttpService')
 local CoreGui = game:GetService('CoreGui')
+
+local mouse = LocalPlayer:GetMouse()
 
 local Library = {}
 Library.connections = {}
@@ -11,13 +15,21 @@ Library.assets = {
     right_section = game:GetObjects('rbxassetid://17795946150')[1],
 
     label = game:GetObjects('rbxassetid://17796551754')[1],
-    toggle = game:GetObjects('rbxassetid://17796652221')[1]
+    toggle = game:GetObjects('rbxassetid://17796652221')[1],
+    slider = game:GetObjects('rbxassetid://17898030390')[1],
+    dropdown = game:GetObjects('rbxassetid://17900518951')[1],
+    option = game:GetObjects('rbxassetid://17900393661')[1]
 }
 
 Library.UI = nil
 Library.UI_open = true
 Library.UI_scale = 1
 
+Library.slider_drag = false
+
+if not isfolder(`Flow`) then
+	makefolder(`Flow`)
+end
 
 function Library:save_flags()
 	if not Library.UI or not Library.UI.Parent then
@@ -48,6 +60,9 @@ function Library:load_flags()
 end
 
 
+Library.load_flags()
+
+
 function Library:get_screen_scale()
     local viewport_size_x = workspace.CurrentCamera.ViewportSize.X
     local viewport_size_y = workspace.CurrentCamera.ViewportSize.Y
@@ -69,7 +84,7 @@ end
 
 
 function Library.new()
-    Library.UI = game:GetObjects('rbxassetid://17797978847')[1]
+    Library.UI = game:GetObjects('rbxassetid://17899813159')[1]
     Library.UI.Parent = CoreGui
 
     Library.connections['rescale'] = workspace.CurrentCamera:GetPropertyChangedSignal('ViewportSize'):Connect(function()
@@ -94,8 +109,6 @@ function Library.new()
     
             value:Disconnect()
         end
-    
-        warn(`[debug]: all connections has been disconnected`)
     end)
 
     function Library:open()
@@ -353,11 +366,179 @@ function Library.new()
             toggle.MouseButton1Click:Connect(function()
                 Library.flags[self.flag] = not Library.flags[self.flag]
                 self.callback(Library.flags[self.flag])
+                Library.save_flags()
 
                 if Library.flags[self.flag] then
                     enable()
                 else
                     disable()
+                end
+            end)
+        end
+
+        function ModuleManager:create_slider()
+            local section = self.section == 'right' and right_section.List or left_section.List
+            
+            local slider = Library.assets.slider:Clone()
+            slider.Parent = section
+            slider.Label.Text = self.name
+
+            if not Library.flags[self.flag] then
+                Library.flags[self.flag] = self.value
+            end
+
+            slider.Value.Text = Library.flags[self.flag]
+            self.callback(Library.flags[self.flag])
+
+            local function update_slider()
+                local result = math.clamp((mouse.X - slider.Box.AbsolutePosition.X) / slider.Box.AbsoluteSize.X + 0.02, 0, 1)
+                local number = math.clamp(math.floor(result * self.maximum_value), self.minimum_value, self.maximum_value)
+
+                TweenService:Create(slider.Box.Fill, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                    Size = UDim2.new(0, result * 220, 0, 5)
+                }):Play()
+    
+                Library.flags[self.flag] = number
+                slider.Value.Text = number
+                self.callback(number)
+            end
+
+            slider.Box.Hitbox.MouseButton1Down:Connect(function()
+				if Library.slider_drag then
+					return
+				end
+
+				Library.slider_drag = true
+                
+                task.defer(function()
+                    while Library.slider_drag do
+                        update_slider()
+                        task.wait()
+                    end
+                end)
+			end)
+
+            local result = math.clamp((Library.flags[self.flag] - self.minimum_value) / (self.maximum_value - self.minimum_value), 0, 1)
+
+            TweenService:Create(slider.Box.Fill, TweenInfo.new(2, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                Size = UDim2.new(0, result * 220, 0, 5)
+            }):Play()
+			
+			Library.connections[`slider_input_{self.flag}`] = UserInputService.InputEnded:Connect(function(input: InputObject, process: boolean)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					Library.slider_drag = false
+					Library.save_flags()
+				end
+			end)
+        end
+
+        function ModuleManager:create_dropdown()
+            local section = self.section == 'right' and right_section.List or left_section.List
+            local list_open = false
+            local list_size = 3
+            
+            local dropdown = Library.assets.dropdown:Clone()
+            dropdown.Parent = section
+            dropdown.Box.Label.Text = self.name
+
+            if not Library.flags[self.flag] then
+                Library.flags[self.flag] = self.option
+            end
+
+            dropdown.Box.Label.Text = Library.flags[self.flag]
+            self.callback(Library.flags[self.flag])
+
+            local function update()
+                for _, object in dropdown.Box.Options.List:GetChildren() do
+                    if object.Name ~= 'Option' then
+                        continue
+                    end
+
+                    if object.Text == Library.flags[self.flag] then
+                        TweenService:Create(object, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                            TextTransparency = 0
+                        }):Play()
+
+                        continue
+                    end
+
+                    TweenService:Create(object, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+                        TextTransparency = 0.8
+                    }):Play()
+                end
+            end
+
+            local function open()
+                dropdown.Box.Label.Text = Library.flags[self.flag]
+
+                TweenService:Create(dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 242, 0, 40 + list_size)
+                }):Play()
+
+                TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 219, 0, list_size)
+                }):Play()
+
+                TweenService:Create(dropdown.Box.Options.List, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 219, 0, list_size - 3)
+                }):Play()
+
+                TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 540
+                }):Play()
+            end
+
+            local function close()
+                dropdown.Box.Label.Text = self.name
+
+                TweenService:Create(dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 242, 0, 40)
+                }):Play()
+
+                TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 219, 0, 0)
+                }):Play()
+
+                TweenService:Create(dropdown.Box.Options.List, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, 219, 0, 0)
+                }):Play()
+
+                TweenService:Create(dropdown.Box.Arrow, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
+                    Rotation = 0
+                }):Play()
+            end
+
+            for index, value in self.options do
+                if index <= self.maximum_options then
+                    list_size += 16
+                end
+
+                local option = Library.assets.option:Clone()
+                option.Text = value
+                option.Parent = dropdown.Box.Options.List
+
+                option.MouseButton1Click:Connect(function()
+                    Library.flags[self.flag] = value
+
+                    if list_open then
+                        dropdown.Box.Label.Text = Library.flags[self.flag]
+                    end
+
+                    update()
+                    self.callback(Library.flags[self.flag])
+                    Library.save_flags()
+                end)
+            end
+
+            update()
+
+            dropdown.MouseButton1Click:Connect(function()
+                list_open = not list_open
+
+                if list_open then
+                    open()
+                else
+                    close()
                 end
             end)
         end
@@ -400,8 +581,7 @@ function Library.__init()
 end
 
 
---[[
-local main = Library.new()
+--[[local main = Library.new()
 
 local blatant = main.create_tab({
     name = 'Blatant',
@@ -423,6 +603,34 @@ blatant.create_toggle({
     end
 })
 
+blatant.create_slider({
+    name = 'Accuracy',
+    flag = 'auto_parry_accuracy',
+    section = 'left',
+
+    value = 100,
+    maximum_value = 100,
+    minimum_value = 1,
+
+    callback = function(value: number)
+        
+    end
+})
+
+blatant.create_dropdown({
+    name = 'Curve',
+    flag = 'auto_parry_curve',
+    section = 'left',
+
+    option = 'Camera',
+    options = {'Camera', 'Straight', 'High', 'Random'},
+    maximum_options = 4,
+
+    callback = function(value: string)
+        
+    end
+})
+
 local visuals = main.create_tab({
     name = 'Visuals',
     icon = 'rbxassetid://17773816885'
@@ -436,10 +644,8 @@ local misc = main.create_tab({
 local settings = main.create_tab({
     name = 'Settings',
     icon = 'rbxassetid://17773816885'
-})
+})]]
 
 Library.__init()
-]]
-
 
 return Library
