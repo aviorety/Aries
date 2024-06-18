@@ -581,7 +581,9 @@ function Library.__init()
 end
 
 
---[[local main = Library.new()
+--[[
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/aviorety/Aries/main/FLibrary.lua'))()
+local main = Library.new()
 
 local blatant = main.create_tab({
     name = 'Blatant',
@@ -646,6 +648,7 @@ local settings = main.create_tab({
     icon = 'rbxassetid://17773816885'
 })
 
-Library.__init()]]
+Library.__init()
+]]
 
 return Library
