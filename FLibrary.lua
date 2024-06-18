@@ -483,7 +483,7 @@ function Library.new()
                 dropdown.Box.Label.Text = Library.flags[self.flag]
 
                 TweenService:Create(dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
-                    Size = UDim2.new(0, 242, 0, 40 + list_size)
+                    Size = UDim2.new(0, 242, 0, 40 + list_size - 3)
                 }):Play()
 
                 TweenService:Create(dropdown.Box.Options, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
