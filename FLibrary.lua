@@ -139,6 +139,16 @@ function Library.new()
         end
     end)
 
+    Library.UI.Mobile.MouseButton1Click:Connect(function()
+        Library.UI_open = not Library.UI_open
+
+        if Library.UI_open then
+            Library.open()
+        else
+            Library.close()
+        end
+    end)
+
     local TabManager = {}
 
     function TabManager:create_tab()
