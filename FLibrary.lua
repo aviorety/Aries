@@ -392,15 +392,16 @@ function Library.new()
 
             local function update_slider()
                 local result = math.clamp((mouse.X - slider.Box.AbsolutePosition.X) / slider.Box.AbsoluteSize.X + 0.02, 0, 1)
-                local number = math.clamp(math.floor(result * self.maximum_value), self.minimum_value, self.maximum_value)
+                local number = math.floor(result * self.maximum_value)
+                local number_threshold = math.clamp(number, self.minimum_value, self.maximum_value)
 
                 TweenService:Create(slider.Box.Fill, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
                     Size = UDim2.new(0, result * 220, 0, 5)
                 }):Play()
     
-                Library.flags[self.flag] = number
-                slider.Value.Text = number
-                self.callback(number)
+                Library.flags[self.flag] = number_threshold
+                slider.Value.Text = number_threshold
+                self.callback(number_threshold)
             end
 
             slider.Box.Hitbox.MouseButton1Down:Connect(function()
