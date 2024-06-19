@@ -456,7 +456,6 @@ function Library.new()
                 Library.flags[self.flag] = self.option
             end
 
-            dropdown.Box.Label.Text = Library.flags[self.flag]
             self.callback(Library.flags[self.flag])
 
             local function update()
