@@ -25,6 +25,10 @@ Library.UI = nil
 Library.UI_open = true
 Library.UI_scale = 1
 
+Library.dragging = false
+Library.drag_input = nil
+Library.drag_start = nil
+Library.container_position = nil
 Library.slider_drag = false
 
 if not isfolder(`Flow`) then
@@ -111,6 +115,39 @@ function Library.new()
         end
     end)
 
+    function Library:drag()
+        local delta = self.Position - Library.drag_start
+        local position = UDim2.new(Library.container_position.X.Scale, Library.container_position.X.Offset + delta.X, Library.container_position.Y.Scale, Library.container_position.Y.Offset + delta.Y)
+
+        TweenService:Create(Library.UI.Container, TweenInfo.new(0.2), {
+            Position = position
+        }):Play()
+    end
+    
+    Library.connections['container_input_began'] = Library.UI.Container.InputBegan:Connect(function(input: InputObject, process: boolean)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then 
+            Library.dragging = true
+            Library.drag_start = input.Position
+            Library.container_position = Library.UI.Container.Position
+
+            Library.connections['container_input_ended'] = input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    Library.dragging = false
+                end
+            end)
+        end
+    end)
+    
+    Library.connections['input_changed'] = UserInputService.InputChanged:Connect(function(input: InputObject, process: boolean)
+        if not Library.dragging then
+            return
+        end
+
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            Library.drag(input)
+        end
+    end)
+
     function Library:open()
         TweenService:Create(Library.UI.Container.UIScale, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
             Scale = Library.UI_scale
@@ -123,7 +160,7 @@ function Library.new()
         }):Play()
     end
 
-    UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
+    Library.connections['input_began'] = UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
         if not Library.UI or not Library.UI.Parent then
             return
         end
@@ -139,7 +176,7 @@ function Library.new()
         end
     end)
 
-    Library.UI.Mobile.MouseButton1Click:Connect(function()
+    Library.connections['button_click'] = Library.UI.Mobile.MouseButton1Click:Connect(function()
         Library.UI_open = not Library.UI_open
 
         if Library.UI_open then
