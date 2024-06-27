@@ -37,3 +37,4 @@ end
 
 
 Loader.__init()
+--test
