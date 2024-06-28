@@ -438,12 +438,15 @@ function Library.new()
             self.callback(Library.flags[self.flag])
 
             local function update_slider()
-                local result = math.clamp((mouse.X - slider.Box.AbsolutePosition.X) / slider.Box.AbsoluteSize.X + 0.02, 0, 1)
-                local number = math.floor(result * self.maximum_value)
-                local number_threshold = math.clamp(number, self.minimum_value, self.maximum_value)
+                local size_percentage = (mouse.X - slider.Box.AbsolutePosition.X) / slider.Box.AbsoluteSize.X
+                local number_percentage = self.minimum_value + ((self.maximum_value - self.minimum_value) * size_percentage)
+
+                local slider_size = math.clamp(size_percentage + 0.02, 0, 1) * 220
+                local clamped_number = math.floor(number_percentage)
+                local number_threshold = math.clamp(clamped_number, self.minimum_value, self.maximum_value)
 
                 TweenService:Create(slider.Box.Fill, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
-                    Size = UDim2.new(0, result * 220, 0, 5)
+                    Size = UDim2.new(0, slider_size, 0, 5)
                 }):Play()
     
                 Library.flags[self.flag] = number_threshold
@@ -466,10 +469,11 @@ function Library.new()
                 end)
 			end)
 
-            local result = math.clamp((Library.flags[self.flag] - self.minimum_value) / (self.maximum_value - self.minimum_value), 0, 1)
+            local percentage = (Library.flags[self.flag] - self.minimum_value) / (self.maximum_value - self.minimum_value)
+            local slider_size = math.clamp(percentage + 0.02, 0, 1) * 220
 
             TweenService:Create(slider.Box.Fill, TweenInfo.new(2, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {
-                Size = UDim2.new(0, result * 220, 0, 5)
+                Size = UDim2.new(0, slider_size, 0, 5)
             }):Play()
 			
 			Library.connections[`slider_input_{self.flag}`] = UserInputService.InputEnded:Connect(function(input: InputObject, process: boolean)
@@ -659,7 +663,7 @@ blatant.create_slider({
 
     value = 100,
     maximum_value = 100,
-    minimum_value = 1,
+    minimum_value = -30,
 
     callback = function(value: number)
         
