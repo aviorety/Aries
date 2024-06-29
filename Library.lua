@@ -442,8 +442,8 @@ function Library.new()
                 local number_percentage = self.minimum_value + ((self.maximum_value - self.minimum_value) * size_percentage)
 
                 local slider_size = math.clamp(size_percentage + 0.02, 0, 1) * 220
-                local clamped_number = math.floor(number_percentage)
-                local number_threshold = math.clamp(clamped_number, self.minimum_value, self.maximum_value)
+                local rounded_number = math.floor(number_percentage * 10) / 10
+                local number_threshold = math.clamp(rounded_number, self.minimum_value, self.maximum_value)
 
                 TweenService:Create(slider.Box.Fill, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
                     Size = UDim2.new(0, slider_size, 0, 5)
